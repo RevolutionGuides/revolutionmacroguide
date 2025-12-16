@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "title": "Mac Permission Fix",
+    "category": "mac",
+    "solution": "<div style='border-left:3px solid #24f0ff;padding-left:12px;margin-bottom:10px;'>💻 <b>Mac Issue</b> — Accessibility permissions not detected after update</div>\n\n<ul>\n<li>Open the <b>Accessibility</b> settings menu in <b>System Settings</b>.</li>\n<li>Click on <b>Revolution Macro</b>.</li>\n<li>Scroll to the bottom and press the <b>minus (-)</b> button.</li>\n<li>Press the <b>plus (+)</b> button.</li>\n<li>Add <b>Revolution Macro</b> from your <b>Applications</b> folder.</li>\n</ul>\n\n<div style='opacity:0.85;margin-top:8px;'>After completing these steps, the macro should regain accessibility permissions and function normally.</div>\n\n<div style='margin-top:10px;font-size:13px;opacity:0.75;'>Added by <b>@RevolutionGuides</b></div>"
+  }
+]
