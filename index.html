@@ -19,11 +19,17 @@
       --stroke:rgba(255,255,255,0.18);
       --stroke2:rgba(0,255,255,0.30);
       --shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+      /* Sidebar tuning */
+      --navW: 168px;                 /* compact */
+      --navPadLeft: 204px;           /* body left padding on desktop */
+      --navTop: 96px;                /* below topbar */
+      --navRadius: 16px;
+      --navBlue: rgba(3, 102, 252, 0.18); /* blue-glass */
+      --navBlue2: rgba(3, 102, 252, 0.08);
     }
 
-    html{
-      scroll-behavior:smooth;
-    }
+    html{ scroll-behavior:smooth; }
 
     body {
       font-family: Arial, sans-serif;
@@ -31,6 +37,8 @@
       padding-top: 86px; /* space for fixed topbar */
       background: var(--bg);
       color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ===== Full-width fixed top bar (polished) ===== */
@@ -101,9 +109,7 @@
       text-shadow: 0 0 14px rgba(36, 240, 255, 0.20);
     }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
+    @keyframes blink { 50% { opacity: 0; } }
 
     .topbar-right {
       display: flex;
@@ -118,8 +124,7 @@
       background: rgba(20, 24, 33, 0.65);
       padding: 8px 12px;
       border-radius: 12px;
-      box-shadow:
-        0 0 0 1px rgba(36,240,255,0.06) inset;
+      box-shadow: 0 0 0 1px rgba(36,240,255,0.06) inset;
       transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
 
@@ -193,6 +198,12 @@
     .stackedit__html p,
     .stackedit__html li { color: var(--text); }
 
+    /* Subtle premium typography improvements WITHOUT changing text */
+    .stackedit__html p, .stackedit__html li { line-height: 1.55; }
+    .stackedit__html h1, .stackedit__html h2, .stackedit__html h3 {
+      text-shadow: 0 0 18px rgba(36,240,255,0.06);
+    }
+
     /* ===== Troubleshooting cards ===== */
     .issue-block {
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -260,26 +271,51 @@
     .section-title { margin-top: 20px; margin-bottom: 10px; }
     .section-empty { opacity: 0.7; margin-bottom: 10px; }
 
-    /* ===== Guide side navigation (smaller + neon) ===== */
+    /* ===== Guide side navigation (compact + integrated + premium) ===== */
     .guide-nav {
       position: fixed;
       left: 14px;
-      top: 98px; /* under topbar */
-      width: 198px;
+      top: var(--navTop);
+      width: var(--navW);
       max-height: calc(100vh - 132px);
       overflow: auto;
       padding: 10px;
-      border-radius: 16px;
+      border-radius: var(--navRadius);
 
-      border: 1px solid rgba(36, 240, 255, 0.28);
-      background: rgba(12, 14, 18, 0.70);
+      /* Blue glass like it belongs with the page */
+      background:
+        linear-gradient(180deg, var(--navBlue), var(--navBlue2));
+      border: 1px solid rgba(36, 240, 255, 0.30);
+
       box-shadow:
         0 0 0 1px rgba(36, 240, 255, 0.12) inset,
-        0 0 24px rgba(36, 240, 255, 0.10);
-      backdrop-filter: blur(10px);
+        0 0 26px rgba(36, 240, 255, 0.10),
+        0 14px 28px rgba(0,0,0,0.20);
 
+      backdrop-filter: blur(12px);
       display: none;
       z-index: 1000;
+    }
+
+    /* nicer scrollbar */
+    .guide-nav::-webkit-scrollbar { width: 10px; }
+    .guide-nav::-webkit-scrollbar-thumb {
+      background: rgba(36,240,255,0.18);
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,0.10);
+    }
+    .guide-nav::-webkit-scrollbar-track { background: rgba(0,0,0,0.10); border-radius: 999px; }
+
+    .guide-nav .nav-title{
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: rgba(36,240,255,0.95);
+      text-shadow: 0 0 14px rgba(36,240,255,0.25);
+      padding: 6px 8px 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 10px;
     }
 
     .guide-nav a {
@@ -287,25 +323,41 @@
       padding: 9px 10px;
       margin-bottom: 8px;
       text-decoration: none;
-      color: var(--text);
       border-radius: 14px;
 
-      border: 1px solid rgba(36, 240, 255, 0.18);
-      background: rgba(20, 24, 33, 0.60);
+      /* Neon text (premium) */
+      color: rgba(233,233,234,0.92);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+
+      border: 1px solid rgba(36, 240, 255, 0.20);
+      background: rgba(20, 24, 33, 0.58);
       box-shadow: 0 0 0 1px rgba(36,240,255,0.05) inset;
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, color 120ms ease;
     }
 
     .guide-nav a:hover {
       transform: translateY(-1px);
-      background: rgba(20, 24, 33, 0.84);
+      background: rgba(20, 24, 33, 0.82);
+      color: rgba(36,240,255,0.95);
+      text-shadow: 0 0 14px rgba(36,240,255,0.22);
       box-shadow:
-        0 0 0 1px rgba(36,240,255,0.14) inset,
-        0 0 18px rgba(36,240,255,0.12);
+        0 0 0 1px rgba(36,240,255,0.18) inset,
+        0 0 20px rgba(36,240,255,0.14);
+    }
+
+    .guide-nav a.active {
+      color: rgba(36,240,255,0.98);
+      text-shadow: 0 0 16px rgba(36,240,255,0.26);
+      border-color: rgba(36,240,255,0.34);
+      background: rgba(10, 12, 16, 0.78);
+      box-shadow:
+        0 0 0 1px rgba(36,240,255,0.22) inset,
+        0 0 24px rgba(36,240,255,0.16);
     }
 
     @media (min-width: 1000px) {
-      body { padding-left: 236px; }
+      body { padding-left: var(--navPadLeft); }
     }
 
     @media (max-width: 999px) {
@@ -900,7 +952,6 @@ Skillet Pine Tree - Supreme Saturator
 
 AI Gather Pine Tree - Supreme Saturator
 {"name":"AI Gather Pine Tree - Supreme Saturator","position":"center","length":4,"width":0,"distance":3,"yaw":2,"backpackPercent":95,"seconds":900,"driftComp":true,"gatherPattern":"AI Gather","field":"pinetree"}`;
-
     document.getElementById("guideContent").innerHTML = marked.parse(guideMarkdown);
 
     // ===== Guide side navigation builder =====
@@ -916,6 +967,11 @@ AI Gather Pine Tree - Supreme Saturator
       if (!nav || !guide) return;
 
       nav.innerHTML = "";
+
+      const title = document.createElement("div");
+      title.className = "nav-title";
+      title.textContent = "Quick Jump";
+      nav.appendChild(title);
 
       const targets = [
         "Gather Tab (1)",
@@ -939,15 +995,46 @@ AI Gather Pine Tree - Supreme Saturator
         const a = document.createElement("a");
         a.href = `#${id}`;
         a.textContent = label;
+        a.dataset.target = id;
+
         a.addEventListener("click", (e) => {
           e.preventDefault();
           el.scrollIntoView({ behavior: "smooth", block: "start" });
           history.replaceState(null, "", `#${id}`);
         });
+
         nav.appendChild(a);
       });
 
       nav.style.display = "block";
+      setupActiveNavTracking(nav, targets.map(t => slugify(t)));
+    }
+
+    // Active highlight as you scroll (premium feel)
+    function setupActiveNavTracking(nav, ids) {
+      if (!("IntersectionObserver" in window)) return;
+
+      const links = Array.from(nav.querySelectorAll("a[data-target]"));
+      const map = new Map(links.map(a => [a.dataset.target, a]));
+
+      const obs = new IntersectionObserver((entries) => {
+        // Find the top-most visible heading
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+
+        if (visible.length === 0) return;
+        const id = visible[0].target.id;
+
+        links.forEach(a => a.classList.remove("active"));
+        const link = map.get(id);
+        if (link) link.classList.add("active");
+      }, { root: null, threshold: 0.25, rootMargin: "-20% 0px -70% 0px" });
+
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obs.observe(el);
+      });
     }
 
     buildGuideNav();
@@ -961,5 +1048,3 @@ AI Gather Pine Tree - Supreme Saturator
 </body>
 
 </html>
-
-
