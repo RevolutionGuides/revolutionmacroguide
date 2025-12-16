@@ -1,12 +1,7 @@
 [
   {
-    "id": "mac-permission-fix",
-    "title": "Mac Permission Fix",
+    "title": "💻 Mac Permission Fix — @RevolutionGuides",
     "category": "mac",
-    "icon": "💻",
-    "author": "@RevolutionGuides",
-    "approved": true,
-    "summary": "Accessibility permissions not detected after update",
-    "solution": "<div class='fix-card neon-mac'><h4>💻 Mac Issue — Accessibility Permissions</h4><ol><li>Open <b>System Settings</b></li><li>Go to <b>Privacy & Security → Accessibility</b></li><li>Find <b>Revolution Macro</b></li><li>Remove it using the minus button</li><li>Click the plus button and re-add Revolution Macro from Applications</li><li>Restart the macro</li></ol><p class='fix-author'>Submitted by @RevolutionGuides</p></div>"
+    "solution": "<div style=\"border-left:3px solid #24f0ff;padding-left:12px;margin-bottom:10px;\"><b>What this fixes:</b> Accessibility permissions not detected after updating.</div><ol style=\"margin:0; padding-left:18px;\"><li>Open <b>System Settings</b>.</li><li>Go to <b>Privacy &amp; Security</b> → <b>Accessibility</b>.</li><li>Find <b>Revolution Macro</b>.</li><li>Scroll down and press the <b>minus (-)</b> button to remove it.</li><li>Press the <b>plus (+)</b> button, add <b>Revolution Macro</b> from your Applications folder.</li><li>Restart the macro and test.</li></ol>"
   }
 ]
