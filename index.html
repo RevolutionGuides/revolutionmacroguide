@@ -8,65 +8,66 @@
   <!-- StackEdit base typography -->
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
 
-  <!-- Neon favicon (inline SVG) -->
+  <!-- Favicon (inline SVG) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='40%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%2324f0ff' stop-opacity='1'/%3E%3Cstop offset='60%25' stop-color='%2324f0ff' stop-opacity='.35'/%3E%3Cstop offset='100%25' stop-color='%23090b10' stop-opacity='1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M18 40c7-12 12-17 18-17 6 0 9 4 10 10-2 10-8 15-18 15-5 0-8-2-10-8z' fill='%23090b10' opacity='.9'/%3E%3Cpath d='M20 38c6-10 10-14 16-14 5 0 7 3 8 8-2 8-7 12-16 12-4 0-6-2-8-6z' fill='%2324f0ff' opacity='.9'/%3E%3C/svg%3E" />
 
   <style>
     :root{
-      --bg1: #5f82c8;
-      --bg2: #3a5da2;
-      --panel: rgba(12, 14, 18, 0.84);
+      /* Requested page blue (tweak here if you want it slightly lighter/darker) */
+      --pageBlue: #0b78ff;
+
+      --panel: rgba(12, 14, 18, 0.86);
       --panel2: rgba(20, 24, 33, 0.72);
       --text: #e9e9ea;
-      --muted: rgba(233,233,234,0.75);
+      --muted: rgba(233,233,234,0.74);
 
       --neon: #24f0ff;
-      --neonSoft: rgba(36,240,255,0.22);
+      --neonSoft: rgba(36,240,255,0.18);
+
       --stroke: rgba(255,255,255,0.16);
-      --stroke2: rgba(36,240,255,0.30);
+      --stroke2: rgba(36,240,255,0.32);
 
-      --shadow: 0 16px 44px rgba(0,0,0,0.25);
-      --shadow2: 0 10px 30px rgba(0,0,0,0.22);
+      --shadow: 0 18px 46px rgba(0,0,0,0.28);
+      --shadow2: 0 10px 28px rgba(0,0,0,0.22);
 
-      /* Header */
-      --headerH: 92px;
+      /* JS keeps this up-to-date from header.offsetHeight */
+      --headerH: 96px;
 
-      /* Sidebar (desktop) */
-      --navW: 172px;     /* compact, premium */
+      /* Sidebar */
+      --navW: 180px;
       --navGap: 18px;
       --navRadius: 18px;
 
-      /* Content max width */
       --maxW: 1120px;
     }
 
     *{ box-sizing: border-box; }
-    html{ scroll-behavior: auto; } /* we handle smooth scroll w/ offset ourselves */
+    html{ scroll-behavior: auto; }
 
     body{
       margin:0;
       font-family: Arial, sans-serif;
       color: var(--text);
-
-      /* Premium background gradient */
-      background:
-        radial-gradient(1200px 700px at 20% 10%, rgba(36,240,255,0.14), transparent 60%),
-        radial-gradient(900px 600px at 85% 30%, rgba(36,240,255,0.10), transparent 55%),
-        linear-gradient(160deg, var(--bg1), var(--bg2));
       min-height: 100vh;
+
+      /* Premium background */
+      background:
+        radial-gradient(1200px 740px at 18% 10%, rgba(36,240,255,0.14), transparent 60%),
+        radial-gradient(900px 640px at 85% 25%, rgba(36,240,255,0.10), transparent 55%),
+        linear-gradient(160deg, rgba(255,255,255,0.05), rgba(0,0,0,0.12)),
+        var(--pageBlue);
     }
 
-    /* ========= ONE HEADER (no double bars) ========= */
+    /* ======================= SINGLE HEADER (fixed) ======================= */
     .app-header{
       position: fixed;
       top:0; left:0; right:0;
       z-index: 9999;
-      height: var(--headerH);
       padding: 14px 18px 12px;
-      background: rgba(10, 12, 16, 0.86);
+      background: rgba(10, 12, 16, 0.88);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.25);
     }
     .app-header::after{
       content:"";
@@ -82,14 +83,14 @@
       align-items:center;
       justify-content:space-between;
       gap: 14px;
-      height: 44px;
+      min-height: 44px;
     }
 
     .brand-wrap{
       display:flex;
       align-items:baseline;
       gap:10px;
-      min-width: 260px;
+      min-width: 220px;
       white-space: nowrap;
     }
 
@@ -110,7 +111,7 @@
       display:inline-flex;
       align-items:baseline;
       gap:4px;
-      min-width: 210px; /* avoids layout shift while typing */
+      min-width: 220px; /* prevents header layout shift */
     }
     .typing{
       color: var(--neon);
@@ -156,7 +157,7 @@
       background: rgba(15,17,21,0.78);
     }
 
-    /* Mobile hamburger for sidebar drawer */
+    /* Mobile hamburger */
     .hamburger{
       display:none;
       width: 42px;
@@ -177,13 +178,13 @@
       background: rgba(15,17,21,0.78);
     }
 
-    /* Header tabs row (inside same header => no second bar) */
+    /* Tabs row stays inside header */
     .header-tabs{
-      height: calc(var(--headerH) - 44px - 10px);
       display:flex;
       align-items:flex-end;
       gap:10px;
-      padding-top: 6px;
+      padding-top: 10px;
+      flex-wrap: wrap;
     }
 
     .tab-btn{
@@ -211,7 +212,7 @@
     }
     .tab-dot{
       width: 8px; height: 8px;
-      border-radius: 99px;
+      border-radius: 999px;
       background: rgba(255,255,255,0.25);
       box-shadow: 0 0 0 2px rgba(0,0,0,0.2) inset;
     }
@@ -220,31 +221,37 @@
       box-shadow: 0 0 18px rgba(36,240,255,0.35);
     }
 
-    /* ========= Main layout wrapper ========= */
+    /* ======================= APP LAYOUT ======================= */
     .app{
-      padding-top: calc(var(--headerH) + 18px); /* prevents header overlap */
+      padding-top: calc(var(--headerH) + 18px);
       padding-left: 18px;
       padding-right: 18px;
       padding-bottom: 28px;
     }
 
     .layout{
-      display:flex;
-      align-items:flex-start;
+      display:grid;
+      grid-template-columns: var(--navW) minmax(0, 1fr);
       gap: var(--navGap);
       max-width: calc(var(--maxW) + var(--navW) + var(--navGap));
       margin: 0 auto;
+      align-items:start;
+    }
+    .layout.no-side{
+      grid-template-columns: minmax(0, 1fr);
     }
 
-    /* ========= Sidebar (Guide quick jump) ========= */
+    /* ======================= SIDEBAR ======================= */
     .side{
       width: var(--navW);
       position: sticky;
       top: calc(var(--headerH) + 18px);
-      align-self:flex-start;
+      align-self:start;
+
       border-radius: var(--navRadius);
       background:
-        linear-gradient(180deg, rgba(3, 102, 252, 0.22), rgba(3, 102, 252, 0.10));
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)),
+        rgba(3, 102, 252, 0.22);
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow: var(--shadow2);
       overflow:hidden;
@@ -273,26 +280,31 @@
     }
 
     .side-links{
-      padding: 12px 10px 14px;
+      padding: 12px 10px 10px;
       display:flex;
       flex-direction:column;
       gap: 10px;
     }
 
-    .side-links a{
+    .side-links a,
+    .side-links button{
       display:block;
+      width:100%;
       text-decoration:none;
-      color: rgba(233,233,234,0.92);
-      font-weight: 800;
+      text-align:left;
+      color: rgba(233,233,234,0.94);
+      font-weight: 900;
       padding: 10px 10px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.16);
       background: rgba(15,17,21,0.55);
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
-      position:relative;
+      user-select:none;
+      cursor:pointer;
     }
-    .side-links a:hover{
+    .side-links a:hover,
+    .side-links button:hover{
       transform: translateY(-1px);
       border-color: rgba(36,240,255,0.32);
       background: rgba(15,17,21,0.70);
@@ -301,26 +313,35 @@
       color: var(--neon);
       border-color: rgba(36,240,255,0.55);
       box-shadow: 0 0 0 1px rgba(36,240,255,0.12) inset, 0 0 26px rgba(36,240,255,0.10);
-      text-shadow: 0 0 16px rgba(36,240,255,0.22);
+      text-shadow: 0 0 16px rgba(36,240,255,0.20);
     }
 
-    /* ========= Content panel ========= */
-    .main{
-      flex: 1;
-      min-width: 0;
+    .side-footer{
+      padding: 0 10px 14px;
     }
 
+    /* Sidebar top button now lives here */
+    #sideTopBtn{
+      margin-top: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight: 1000;
+    }
+
+    /* ======================= MAIN PANEL ======================= */
     .panel{
       border: 1px solid rgba(255,255,255,0.16);
       border-radius: 18px;
       background: rgba(15, 17, 21, 0.86);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow);
-      padding: 18px 18px;
+      padding: 18px;
       overflow:hidden;
+      min-height: 320px;
     }
 
-    /* Keep guide + troubleshooting consistent */
     .tab-content{ display:none; }
     .tab-content.active{ display:block; animation: fadeInUp 220ms ease both; }
     @keyframes fadeInUp{
@@ -329,27 +350,23 @@
     }
 
     /* StackEdit content legibility */
-    .stackedit__html{
-      color: var(--text);
-    }
+    .stackedit__html{ color: var(--text); }
     .stackedit__html h1, .stackedit__html h2, .stackedit__html h3, .stackedit__html h4,
-    .stackedit__html p, .stackedit__html li{
-      color: var(--text);
-    }
+    .stackedit__html p, .stackedit__html li{ color: var(--text); }
     .stackedit__html a{
       color: var(--text);
       text-decoration: underline;
       text-decoration-color: rgba(36,240,255,0.35);
     }
 
-    /* Make code blocks premium + add room for copy button */
+    /* Premium code blocks + copy button */
     pre{
       position: relative;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.16);
       background: rgba(10,12,16,0.72);
       box-shadow: 0 10px 24px rgba(0,0,0,0.20);
-      padding: 14px 14px;
+      padding: 14px;
       overflow: auto;
     }
     pre code{
@@ -368,7 +385,7 @@
       color: rgba(233,233,234,0.92);
       padding: 8px 10px;
       cursor:pointer;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 12px;
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       user-select:none;
@@ -384,26 +401,23 @@
       box-shadow: 0 0 18px rgba(36,240,255,0.10);
     }
 
-    /* ========= Troubleshooting UX ========= */
+    /* ======================= TROUBLESHOOTING UX ======================= */
     .ts-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 14px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .ts-title{
       margin: 0;
       font-size: 26px;
-      font-weight: 900;
+      font-weight: 1000;
       letter-spacing: 0.2px;
     }
     .ts-sub{
-      margin: 6px 0 0;
+      margin: 8px 0 0;
       color: var(--muted);
       line-height: 1.35;
-      max-width: 680px;
+      max-width: 720px;
     }
+    /* Remove any accidental “thin line” under troubleshooting by not adding extra borders here */
 
     .ts-toolbar{
       display:flex;
@@ -444,7 +458,7 @@
       padding: 10px 12px;
       border-radius: 14px;
       cursor:pointer;
-      font-weight: 900;
+      font-weight: 1000;
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       user-select:none;
       white-space: nowrap;
@@ -471,7 +485,7 @@
       border: 1px solid rgba(36,240,255,0.22);
       border-radius: 16px;
       background: rgba(10,12,16,0.42);
-      padding: 14px 14px;
+      padding: 14px;
       cursor:pointer;
       box-shadow: 0 10px 22px rgba(0,0,0,0.18);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
@@ -483,7 +497,7 @@
       content:"";
       position:absolute;
       inset:-40px;
-      background: radial-gradient(500px 180px at 20% 20%, rgba(36,240,255,0.18), transparent 60%);
+      background: radial-gradient(520px 180px at 20% 20%, rgba(36,240,255,0.18), transparent 60%);
       opacity: 0.9;
       pointer-events:none;
     }
@@ -500,13 +514,7 @@
     .cat-title{
       font-weight: 1000;
       font-size: 18px;
-      display:flex;
-      align-items:center;
-      gap: 10px;
       color: var(--text);
-    }
-    .cat-title .emoji{
-      filter: drop-shadow(0 0 12px rgba(36,240,255,0.12));
     }
     .cat-sub{
       color: var(--muted);
@@ -530,7 +538,6 @@
       box-shadow: 0 10px 22px rgba(0,0,0,0.16);
     }
 
-    /* Button header fixes the "first click does nothing" vibe */
     .issue-title{
       width: 100%;
       text-align:left;
@@ -538,7 +545,7 @@
       border:none;
       background: transparent;
       color: var(--text);
-      padding: 14px 14px;
+      padding: 14px;
       font-size: 16px;
       font-weight: 1000;
       cursor:pointer;
@@ -564,16 +571,9 @@
       color: rgba(233,233,234,0.92);
       line-height: 1.45;
     }
-
     .issue-body.open{
       display:block;
       animation: fadeInUp 180ms ease both;
-    }
-
-    .issue-body a{
-      color: var(--text);
-      text-decoration: underline;
-      text-decoration-color: rgba(36,240,255,0.35);
     }
 
     .empty{
@@ -584,8 +584,8 @@
       background: rgba(10,12,16,0.30);
     }
 
-    /* ========= Back to top ========= */
-    #backToTop{
+    /* Mobile floating top button (sidebar has top button on desktop) */
+    #backToTopMobile{
       position: fixed;
       right: 18px;
       bottom: 18px;
@@ -599,52 +599,30 @@
       display:none;
       box-shadow: 0 10px 22px rgba(0,0,0,0.20);
     }
-    #backToTop:hover{
+    #backToTopMobile:hover{
       border-color: rgba(36,240,255,0.35);
       color: var(--neon);
     }
 
-    /* ========= Mobile / Responsive ========= */
+    /* ======================= MOBILE / RESPONSIVE ======================= */
     @media (max-width: 980px){
-      :root{ --headerH: 92px; }
+      .layout{ grid-template-columns: minmax(0, 1fr); }
+      .side{ display:none; }
+      .hamburger{ display:inline-flex; }
 
-      .layout{
-        max-width: 980px;
-      }
-
-      /* Hide sticky sidebar; use drawer */
-      .side{
-        display:none;
-      }
-
-      .hamburger{
-        display:inline-flex;
-      }
-
-      .cat-grid{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .cat-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 560px){
-      .brand-wrap{
-        min-width: 0;
-      }
-      .typingWrap{
-        min-width: 160px;
-      }
-      .cat-grid{
-        grid-template-columns: 1fr;
-      }
-      .pill-link{
-        padding: 10px 12px;
-      }
-      .tab-btn{
-        padding: 10px 12px;
-      }
+      .brand-wrap{ min-width: 0; }
+      .typingWrap{ min-width: 160px; }
+      .cat-grid{ grid-template-columns: 1fr; }
+
+      .pill-link{ padding: 10px 12px; }
+      .tab-btn{ padding: 10px 12px; }
     }
 
-    /* ========= Sidebar Drawer (mobile) ========= */
+    /* ======================= SIDEBAR DRAWER (mobile) ======================= */
     .drawer-backdrop{
       position: fixed;
       inset: 0;
@@ -657,19 +635,17 @@
       position: fixed;
       top: var(--headerH);
       left: 12px;
-      width: min(260px, calc(100vw - 24px));
+      width: min(280px, calc(100vw - 24px));
       max-height: calc(100vh - var(--headerH) - 12px);
       overflow:auto;
       z-index: 9999;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.14);
       background:
-        linear-gradient(180deg, rgba(3, 102, 252, 0.24), rgba(3, 102, 252, 0.10));
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)),
+        rgba(3, 102, 252, 0.22);
       box-shadow: var(--shadow);
       display:none;
-    }
-    .drawer .side-links{
-      padding-bottom: 16px;
     }
     .drawer.open,
     .drawer-backdrop.open{
@@ -681,22 +657,23 @@
 </head>
 
 <body>
-  <!-- Mobile drawer elements -->
+  <!-- Mobile drawer -->
   <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="side-header">
       <div class="side-title">Quick Jump</div>
     </div>
     <div id="drawerLinks" class="side-links"></div>
+    <div class="side-footer">
+      <button id="drawerTopBtn" type="button">Top</button>
+    </div>
   </div>
 
-  <!-- ONE header (contains tabs) -->
-  <header class="app-header">
+  <!-- SINGLE header -->
+  <header class="app-header" id="appHeader">
     <div class="header-row">
       <div class="brand-wrap">
-        <button id="hamburger" class="hamburger" title="Open Quick Jump" aria-label="Open Quick Jump">
-          ☰
-        </button>
+        <button id="hamburger" class="hamburger" title="Open Quick Jump" aria-label="Open Quick Jump">☰</button>
 
         <div class="brand-title">
           <span class="brand">Revolution Macro</span>
@@ -727,58 +704,62 @@
   </header>
 
   <main class="app">
-    <div class="layout">
-      <!-- Desktop sticky sidebar (Guide quick jump) -->
+    <div class="layout" id="layout">
+      <!-- Sidebar (Guide only) -->
       <aside id="side" class="side" aria-label="Quick Jump">
         <div class="side-header">
           <div class="side-title">Quick Jump</div>
         </div>
+
+        <!-- EXACTLY 6 items -->
         <nav id="guideNav" class="side-links"></nav>
+
+        <div class="side-footer">
+          <button id="sideTopBtn" type="button">Top</button>
+        </div>
       </aside>
 
       <!-- Main content -->
       <section class="main">
         <div class="panel">
-          <!-- ==================== GUIDE TAB ==================== -->
+          <!-- GUIDE TAB -->
           <div id="guide" class="tab-content active">
             <div class="stackedit__html" id="guideContent"></div>
           </div>
 
-          <!-- ==================== TROUBLESHOOTING TAB ==================== -->
+          <!-- TROUBLESHOOTING TAB -->
           <div id="troubleshooting" class="tab-content">
             <div class="ts-head">
-              <div>
-                <h2 class="ts-title">Troubleshooting</h2>
-                <p class="ts-sub">
-                  Pick a category, search within it, and expand an entry for the exact fix. If you found a new solution, submit it using the button in the header.
-                </p>
-              </div>
+              <h2 class="ts-title">Troubleshooting</h2>
+              <p class="ts-sub">
+                Pick a category, search within it, and expand an entry for the exact fix. If you found a new solution, submit it using the button in the header.
+              </p>
             </div>
 
-            <!-- Category cards (clear UX) -->
+            <!-- Category cards (no emojis) -->
             <div class="cat-grid" id="catGrid">
               <div class="cat-card" data-cat="mac">
-                <div class="cat-title"><span class="emoji">:computer:</span> Mac</div>
+                <div class="cat-title">Mac</div>
                 <div class="cat-sub">Accessibility, permissions, macOS fixes</div>
               </div>
               <div class="cat-card" data-cat="windows">
-                <div class="cat-title"><span class="emoji">:windows:</span> Windows</div>
+                <div class="cat-title">Windows</div>
                 <div class="cat-sub">Capture mode, drivers, Windows fixes</div>
               </div>
               <div class="cat-card" data-cat="macro">
-                <div class="cat-title"><span class="emoji">:robot:</span> Macro</div>
+                <div class="cat-title">Macro</div>
                 <div class="cat-sub">Settings, patterns, routing, resets</div>
               </div>
               <div class="cat-card" data-cat="pro">
-                <div class="cat-title"><span class="emoji">🧑‍🚒</span> Pro</div>
+                <div class="cat-title">Pro</div>
                 <div class="cat-sub">Advanced tips, high efficiency setups</div>
               </div>
             </div>
 
-            <!-- Toolbar -->
+            <!-- Search + filters -->
             <div class="ts-toolbar">
               <div class="ts-search" title="Search current category">
-                <span class="icon">⌕</span>
+                <span class="icon">Search</span>
                 <input id="tsSearch" type="text" placeholder="Search fixes..." />
               </div>
 
@@ -797,40 +778,41 @@
     </div>
   </main>
 
-  <button id="backToTop" type="button">↑ Top</button>
+  <!-- Mobile-only floating top button -->
+  <button id="backToTopMobile" type="button">Top</button>
 
   <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script>
     /**********************
-     * Utility: Emoji shortcodes used in your JSON titles
-     * (GitHub issues often use :computer: etc)
+     * Keep CSS --headerH synced to actual header height (fixes tab overflow + offsets)
      **********************/
-    function expandEmojiShortcodes(str){
-      if (!str) return str;
-      return str
-        .replaceAll(":computer:", "💻")
-        .replaceAll(":windows:", "🪟")
-        .replaceAll(":robot:", "🤖");
-      // firefighter is already unicode 🧑‍🚒 in your request
+    function syncHeaderHeight(){
+      const header = document.getElementById("appHeader");
+      if (!header) return;
+      const h = header.offsetHeight || 96;
+      document.documentElement.style.setProperty("--headerH", h + "px");
     }
+    window.addEventListener("resize", syncHeaderHeight);
 
     /**********************
-     * Smooth scroll w/ header offset (fixes "jump")
+     * Smooth scroll with header offset (no jumping)
      **********************/
     function scrollToWithOffset(el){
       if (!el) return;
-      const header = document.querySelector(".app-header");
+      syncHeaderHeight();
+      const header = document.getElementById("appHeader");
       const offset = (header ? header.offsetHeight : 0) + 14;
       const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
 
     /**********************
-     * Tabs (header buttons)
+     * Tabs
      **********************/
-    const tabBtns = [document.getElementById("tabGuideBtn"), document.getElementById("tabTroubleBtn")];
+    const layout = document.getElementById("layout");
+    const side = document.getElementById("side");
 
     function openTab(tabId){
       document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
@@ -839,34 +821,39 @@
       const active = document.getElementById(tabId);
       if (active) active.classList.add("active");
 
-      const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+      const btn = document.querySelector(\`.tab-btn[data-tab="\${tabId}"]\`);
       if (btn) btn.classList.add("active");
 
-      // Sidebar only for guide
+      // Sidebar visible only for guide tab (and layout should fill when hidden)
       const showNav = (tabId === "guide");
-      document.getElementById("side").style.display = showNav ? "block" : "none";
+      if (showNav){
+        side.style.display = "block";
+        layout.classList.remove("no-side");
+      } else {
+        side.style.display = "none";
+        layout.classList.add("no-side");
+      }
 
-      // Close drawer on tab switch (mobile)
       closeDrawer();
 
-      // If troubleshooting, make sure issues are loaded at least once
-      if (tabId === "troubleshooting") {
-        ensureIssuesLoaded();
-      }
+      if (tabId === "troubleshooting") ensureIssuesLoaded();
+
+      // Keep header offsets correct
+      syncHeaderHeight();
     }
 
-    tabBtns.forEach(btn => {
-      btn.addEventListener("click", () => openTab(btn.dataset.tab));
-    });
+    document.getElementById("tabGuideBtn").addEventListener("click", () => openTab("guide"));
+    document.getElementById("tabTroubleBtn").addEventListener("click", () => openTab("troubleshooting"));
 
     /**********************
-     * Mobile Drawer (Quick Jump)
+     * Mobile Drawer
      **********************/
     const drawer = document.getElementById("drawer");
     const drawerBackdrop = document.getElementById("drawerBackdrop");
     const hamburger = document.getElementById("hamburger");
 
     function openDrawer(){
+      syncHeaderHeight();
       drawer.classList.add("open");
       drawerBackdrop.classList.add("open");
       drawer.setAttribute("aria-hidden", "false");
@@ -886,16 +873,23 @@
     drawerBackdrop.addEventListener("click", closeDrawer);
 
     /**********************
-     * Back to top
+     * Top buttons (sidebar + drawer + mobile floating)
      **********************/
-    const backToTop = document.getElementById("backToTop");
+    function goTop(){ window.scrollTo({ top: 0, behavior: "smooth" }); }
+
+    document.getElementById("sideTopBtn").addEventListener("click", goTop);
+    document.getElementById("drawerTopBtn").addEventListener("click", () => { goTop(); closeDrawer(); });
+
+    const backToTopMobile = document.getElementById("backToTopMobile");
     window.addEventListener("scroll", () => {
-      backToTop.style.display = window.scrollY > 380 ? "block" : "none";
+      // only show on mobile (sidebar hidden)
+      const isMobile = window.matchMedia("(max-width: 980px)").matches;
+      backToTopMobile.style.display = (isMobile && window.scrollY > 380) ? "block" : "none";
     });
-    backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    backToTopMobile.addEventListener("click", goTop);
 
     /**********************
-     * Typewriter (slower, caret visually follows text)
+     * Typewriter (slower, caret stays right after text naturally)
      **********************/
     (function titleTypewriter(){
       const el = document.getElementById("typingWord");
@@ -914,23 +908,23 @@
             deleting = true;
             return setTimeout(tick, 1600);
           }
-          return setTimeout(tick, 110); // slower typing
+          return setTimeout(tick, 120); // slower typing
         } else {
           i--;
           el.textContent = word.slice(0, i);
           if (i <= 0){
             deleting = false;
             w = (w + 1) % words.length;
-            return setTimeout(tick, 520);
+            return setTimeout(tick, 560);
           }
-          return setTimeout(tick, 75); // slower delete
+          return setTimeout(tick, 85); // slower delete
         }
       }
       tick();
     })();
 
     /**********************
-     * FULL GUIDE (verbatim). Do not edit inside this string.
+     * GUIDE CONTENT (verbatim)
      **********************/
     const guideMarkdown = `# Revolution Macro Guide and Fixes
 
@@ -1125,101 +1119,7 @@ made by draco/imes ^^`;
     document.getElementById("guideContent").innerHTML = marked.parse(guideMarkdown);
 
     /**********************
-     * Build Guide Nav (Quick Jump) + Active tracking
-     **********************/
-    function slugify(text){
-      return (text || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-");
-    }
-
-    function buildGuideNav(){
-      const guideRoot = document.getElementById("guideContent");
-      const nav = document.getElementById("guideNav");
-      const drawerLinks = document.getElementById("drawerLinks");
-
-      if (!guideRoot || !nav || !drawerLinks) return;
-
-      const headings = guideRoot.querySelectorAll("h1, h2");
-      const targets = [];
-
-      headings.forEach(h => {
-        const txt = h.textContent.trim();
-        if (!txt) return;
-        // Only jump headings we care about (keeps sidebar clean)
-        // Keep this simple: include all h1/h2 from your markdown
-        const id = slugify(txt);
-        h.id = id;
-        targets.push({ id, text: txt });
-      });
-
-      nav.innerHTML = "";
-      drawerLinks.innerHTML = "";
-
-      targets.forEach(t => {
-        const a = document.createElement("a");
-        a.href = `#${t.id}`;
-        a.dataset.target = t.id;
-        a.textContent = t.text;
-
-        a.addEventListener("click", (e) => {
-          e.preventDefault();
-          const el = document.getElementById(t.id);
-          scrollToWithOffset(el);
-          history.replaceState(null, "", `#${t.id}`);
-          closeDrawer();
-        });
-
-        // Clone for drawer
-        const b = a.cloneNode(true);
-        b.addEventListener("click", (e) => {
-          e.preventDefault();
-          const el = document.getElementById(t.id);
-          scrollToWithOffset(el);
-          history.replaceState(null, "", `#${t.id}`);
-          closeDrawer();
-        });
-
-        nav.appendChild(a);
-        drawerLinks.appendChild(b);
-      });
-
-      setupActiveNavTracking(nav, targets.map(x => x.id));
-    }
-
-    function setupActiveNavTracking(nav, ids){
-      if (!("IntersectionObserver" in window)) return;
-      const links = Array.from(nav.querySelectorAll("a[data-target]"));
-      const map = new Map(links.map(a => [a.dataset.target, a]));
-
-      const obs = new IntersectionObserver((entries) => {
-        const visible = entries
-          .filter(e => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (!visible.length) return;
-
-        const id = visible[0].target.id;
-        links.forEach(a => a.classList.remove("active"));
-        const link = map.get(id);
-        if (link) link.classList.add("active");
-      }, {
-        threshold: 0.25,
-        rootMargin: "-25% 0px -65% 0px"
-      });
-
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) obs.observe(el);
-      });
-    }
-
-    buildGuideNav();
-
-    /**********************
-     * Copy buttons (auto-add to all pre>code)
+     * Copy buttons on code blocks
      **********************/
     function addCopyButtons(root){
       const blocks = (root || document).querySelectorAll("pre");
@@ -1252,18 +1152,120 @@ made by draco/imes ^^`;
         pre.appendChild(btn);
       });
     }
-
     addCopyButtons(document.getElementById("guideContent"));
 
     /**********************
-     * Troubleshooting: loading + UX
+     * Sidebar: EXACTLY 6 links (the tabs)
+     **********************/
+    function slugify(text){
+      return (text || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-");
+    }
+
+    function buildSixItemNav(){
+      const guideRoot = document.getElementById("guideContent");
+      const nav = document.getElementById("guideNav");
+      const drawerLinks = document.getElementById("drawerLinks");
+
+      if (!guideRoot || !nav || !drawerLinks) return;
+
+      // Find headings and assign IDs
+      const headings = guideRoot.querySelectorAll("h1, h2");
+      headings.forEach(h => {
+        const txt = (h.textContent || "").trim();
+        if (!txt) return;
+        h.id = slugify(txt);
+      });
+
+      const wanted = [
+        { label: "Gather Tab (1)", id: slugify("Gather Tab (1)") },
+        { label: "Collect Tab (2)", id: slugify("Collect Tab (2)") },
+        { label: "Planters Tab (3)", id: slugify("Planters Tab (3)") },
+        { label: "Status Tab (4)", id: slugify("Status Tab (4)") },
+        { label: "Tools Tab (5)", id: slugify("Tools Tab (5)") },
+        { label: "Settings Tab (6)", id: slugify("Settings Tab (6)") },
+      ];
+
+      nav.innerHTML = "";
+      drawerLinks.innerHTML = "";
+
+      wanted.forEach(t => {
+        const targetEl = document.getElementById(t.id);
+        if (!targetEl) return;
+
+        const a = document.createElement("a");
+        a.href = "#" + t.id;
+        a.dataset.target = t.id;
+        a.textContent = t.label;
+
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          scrollToWithOffset(targetEl);
+          history.replaceState(null, "", "#" + t.id);
+        });
+
+        const b = a.cloneNode(true);
+        b.addEventListener("click", (e) => {
+          e.preventDefault();
+          scrollToWithOffset(targetEl);
+          history.replaceState(null, "", "#" + t.id);
+          closeDrawer();
+        });
+
+        nav.appendChild(a);
+        drawerLinks.appendChild(b);
+      });
+
+      setupActiveNavTracking(nav, wanted.map(x => x.id));
+    }
+
+    function setupActiveNavTracking(nav, ids){
+      if (!("IntersectionObserver" in window)) return;
+      const links = Array.from(nav.querySelectorAll("a[data-target]"));
+      const map = new Map(links.map(a => [a.dataset.target, a]));
+
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (!visible.length) return;
+
+        const id = visible[0].target.id;
+        links.forEach(a => a.classList.remove("active"));
+        const link = map.get(id);
+        if (link) link.classList.add("active");
+      }, {
+        threshold: 0.25,
+        rootMargin: "-25% 0px -65% 0px"
+      });
+
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obs.observe(el);
+      });
+    }
+
+    /**********************
+     * Troubleshooting: load + render
      **********************/
     let TROUBLE_CACHE = null;
     let TROUBLE_LOADED = false;
 
+    // Strip emoji shortcodes and obvious emoji characters from titles (you asked: no emojis)
+    function stripEmoji(text){
+      if (!text) return "";
+      return text
+        .replace(/:[a-zA-Z0-9_+-]+:/g, "")      // :computer: etc
+        .replace(/[\u{1F300}-\u{1FAFF}]/gu, "") // emoji ranges
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
+
     function getRepoContext(){
-      // If hosted on GitHub Pages, we can try to infer owner/repo from location or hardcode.
-      // Hardcode your repo since it’s stable:
       return { owner: "RevolutionGuides", repo: "revolutionmacroguide", branch: "main" };
     }
 
@@ -1271,12 +1273,9 @@ made by draco/imes ^^`;
       const { owner, repo, branch } = getRepoContext();
       const cacheBust = Date.now();
 
-      // 1) root (recommended)
-      // 2) .github/ (may fail on Pages)
-      // 3) raw.githubusercontent.com (reliable)
+      // Pages sometimes won’t serve .github reliably; raw GitHub is safest.
       const tries = [
         `troubleshooting.json?v=${cacheBust}`,
-        `.github/troubleshooting.json?v=${cacheBust}`,
         `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/.github/troubleshooting.json?v=${cacheBust}`,
         `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/troubleshooting.json?v=${cacheBust}`,
       ];
@@ -1304,9 +1303,9 @@ made by draco/imes ^^`;
       try{
         const data = await fetchTroubleJson();
         TROUBLE_CACHE = (data || []).map(i => ({
-          title: expandEmojiShortcodes(i.title || ""),
+          title: stripEmoji(i.title || "Untitled fix"),
           category: (i.category || "").toLowerCase().trim(),
-          solution: expandEmojiShortcodes(i.solution || ""),
+          solution: (i.solution || ""),
         }));
         renderTroubleshooting();
       }catch(err){
@@ -1314,13 +1313,11 @@ made by draco/imes ^^`;
         container.innerHTML = `
           <div class="empty">
             Could not load <b>troubleshooting.json</b>.<br><br>
-            Best fix for GitHub Pages: also keep a copy at repo root as <b>/troubleshooting.json</b>.<br>
-            (This page also tries a raw GitHub fallback.)
+            Quick fix: keep a copy at repo root as <b>/troubleshooting.json</b> OR rely on the raw GitHub URL.
           </div>`;
       }
     }
 
-    // State
     let activeCat = "all";
     let searchQ = "";
 
@@ -1330,17 +1327,14 @@ made by draco/imes ^^`;
       renderTroubleshooting();
     });
 
-    // Category cards click => activate filter
     document.querySelectorAll(".cat-card").forEach(card => {
       card.addEventListener("click", () => {
         setCategory(card.dataset.cat || "all");
-        // Scroll down to issues list smoothly for UX clarity
         const issuesEl = document.getElementById("issues");
         if (issuesEl) setTimeout(() => scrollToWithOffset(issuesEl), 40);
       });
     });
 
-    // Filter pills
     const allCatsBtn = document.getElementById("allCatsBtn");
     allCatsBtn.addEventListener("click", () => setCategory("all"));
     document.querySelectorAll(".ts-filter-pill[data-filter]").forEach(btn => {
@@ -1350,18 +1344,16 @@ made by draco/imes ^^`;
     function setCategory(cat){
       activeCat = cat || "all";
 
-      // active state on pills
       document.querySelectorAll(".ts-filter-pill").forEach(p => p.classList.remove("active"));
       if (activeCat === "all") allCatsBtn.classList.add("active");
       else {
-        const pill = document.querySelector(`.ts-filter-pill[data-filter="${activeCat}"]`);
+        const pill = document.querySelector(\`.ts-filter-pill[data-filter="\${activeCat}"]\`);
         if (pill) pill.classList.add("active");
       }
 
-      // active state on cards
       document.querySelectorAll(".cat-card").forEach(c => c.classList.remove("active"));
       if (activeCat !== "all"){
-        const card = document.querySelector(`.cat-card[data-cat="${activeCat}"]`);
+        const card = document.querySelector(\`.cat-card[data-cat="\${activeCat}"]\`);
         if (card) card.classList.add("active");
       }
 
@@ -1389,7 +1381,7 @@ made by draco/imes ^^`;
       }
 
       container.innerHTML = "";
-      filtered.forEach((issue, idx) => {
+      filtered.forEach((issue) => {
         const block = document.createElement("div");
         block.className = "issue-block";
 
@@ -1414,13 +1406,8 @@ made by draco/imes ^^`;
         btn.addEventListener("click", () => {
           const open = body.classList.toggle("open");
           chev.style.transform = open ? "rotate(180deg)" : "rotate(0deg)";
-          // Add copy buttons inside solution if there are code blocks
           if (open) addCopyButtons(body);
         });
-
-        // Optional: open first item for better UX if filtered is small
-        // (Comment out if you don't want auto-open)
-        // if (idx === 0 && filtered.length <= 2) { btn.click(); }
 
         block.appendChild(btn);
         block.appendChild(body);
@@ -1429,12 +1416,25 @@ made by draco/imes ^^`;
     }
 
     /**********************
-     * Default: start in Guide
+     * Init
      **********************/
+    syncHeaderHeight();
+    buildSixItemNav();
     openTab("guide");
-
+    // If user loads with hash, keep it smooth + correct offset
+    window.addEventListener("load", () => {
+      syncHeaderHeight();
+      const id = (location.hash || "").replace("#", "");
+      if (id){
+        const el = document.getElementById(id);
+        if (el){
+          setTimeout(() => scrollToWithOffset(el), 40);
+        }
+      }
+    });
   </script>
 </body>
 </html>
+
 
 
