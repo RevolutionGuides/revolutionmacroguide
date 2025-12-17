@@ -345,21 +345,15 @@
       text-decoration-color: rgba(36,240,255,0.35);
     }
 
-    /* nicer section separators */
+    /* REMOVE the weird lines on headers/subheaders */
     .stackedit__html h1,
     .stackedit__html h2{
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      position: relative;
+      border: none !important;
+      padding-bottom: 0 !important;
     }
     .stackedit__html h1::after,
     .stackedit__html h2::after{
-      content:"";
-      position:absolute;
-      left:0; right:0; bottom:-1px;
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(36,240,255,0.28), transparent);
-      pointer-events:none;
+      display:none !important;
     }
 
     /* copy buttons for code blocks */
@@ -633,10 +627,121 @@
       display:none;
     }
     .drawer.open, .drawer-backdrop.open{ display:block; animation: fadeInUp 160ms ease both; }
+
+    /* ===== music modal ===== */
+    .modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display:none;
+    }
+    .modal{
+      position: fixed;
+      z-index: 10001;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(820px, calc(100vw - 26px));
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(12, 14, 18, 0.92);
+      box-shadow: 0 20px 70px rgba(0,0,0,0.40);
+      display:none;
+      overflow:hidden;
+    }
+    .modal.open, .modal-backdrop.open{ display:block; }
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    .modal-title{
+      font-weight: 1000;
+      letter-spacing: 0.2px;
+      color: var(--text);
+    }
+    .modal-sub{
+      margin-top: 2px;
+      color: rgba(233,233,234,0.70);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .modal-close{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(15,17,21,0.62);
+      color: rgba(233,233,234,0.92);
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 1000;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .modal-close:hover{
+      transform: translateY(-1px);
+      border-color: rgba(36,240,255,0.35);
+      background: rgba(15,17,21,0.78);
+      color: var(--neon);
+    }
+    .modal-body{
+      padding: 14px;
+    }
+    .yt-wrap{
+      border-radius: 16px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(10,12,16,0.55);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.26);
+      aspect-ratio: 16 / 9;
+      width: 100%;
+    }
+    .yt-wrap iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+    .modal-foot{
+      padding: 0 14px 14px;
+      color: rgba(233,233,234,0.72);
+      font-size: 12px;
+      line-height: 1.35;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Music modal -->
+  <div id="musicBackdrop" class="modal-backdrop" aria-hidden="true"></div>
+  <div id="musicModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Music Player">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Music</div>
+        <div class="modal-sub">Note Block Hypixel Skyblock OST — Sky of Trees (Forest Islands)</div>
+      </div>
+      <button id="musicClose" class="modal-close" type="button">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="yt-wrap">
+        <!-- Loop works via playlist param. Autoplay is off (browsers commonly block autoplay with sound). -->
+        <iframe
+          id="musicFrame"
+          src="https://www.youtube.com/embed/x3bBQasjbfs?loop=1&playlist=x3bBQasjbfs&controls=1&modestbranding=1&rel=0"
+          title="Music Player"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    <div class="modal-foot">
+      If it does not start automatically, press Play in the video player. It will loop.
+    </div>
+  </div>
+
   <!-- Mobile drawer -->
   <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
   <div id="drawer" class="drawer" aria-hidden="true">
@@ -664,6 +769,8 @@
       </div>
 
       <div class="header-actions">
+        <button class="pill-link" id="musicBtn" type="button">Music</button>
+
         <a class="pill-link" href="https://github.com/RevolutionGuides/revolutionmacroguide/issues" target="_blank" rel="noopener noreferrer">
           Open Issues
         </a>
@@ -767,14 +874,19 @@
     }
     window.addEventListener("resize", syncHeaderHeight);
 
-    /* smooth scroll with header offset */
+    /* IMPORTANT: smooth scroll disabled on mobile (per request) */
+    function isMobile(){
+      return window.matchMedia("(max-width: 980px)").matches;
+    }
+
     function scrollToWithOffset(el){
       if (!el) return;
       syncHeaderHeight();
       const header = document.getElementById("appHeader");
       const offset = (header ? header.offsetHeight : 0) + 14;
       const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: y, behavior: "smooth" });
+
+      window.scrollTo({ top: y, behavior: isMobile() ? "auto" : "smooth" });
     }
 
     /* tabs */
@@ -835,16 +947,43 @@
     drawerBackdrop.addEventListener("click", closeDrawer);
 
     /* top buttons */
-    function goTop(){ window.scrollTo({ top: 0, behavior: "smooth" }); }
+    function goTop(){
+      window.scrollTo({ top: 0, behavior: isMobile() ? "auto" : "smooth" });
+    }
     document.getElementById("sideTopBtn").addEventListener("click", goTop);
     document.getElementById("drawerTopBtn").addEventListener("click", () => { goTop(); closeDrawer(); });
 
     const backToTopMobile = document.getElementById("backToTopMobile");
     window.addEventListener("scroll", () => {
-      const isMobile = window.matchMedia("(max-width: 980px)").matches;
-      backToTopMobile.style.display = (isMobile && window.scrollY > 380) ? "block" : "none";
+      const show = isMobile() && window.scrollY > 380;
+      backToTopMobile.style.display = show ? "block" : "none";
     });
     backToTopMobile.addEventListener("click", goTop);
+
+    /* music modal */
+    const musicBtn = document.getElementById("musicBtn");
+    const musicModal = document.getElementById("musicModal");
+    const musicBackdrop = document.getElementById("musicBackdrop");
+    const musicClose = document.getElementById("musicClose");
+
+    function openMusic(){
+      musicModal.classList.add("open");
+      musicBackdrop.classList.add("open");
+      musicModal.setAttribute("aria-hidden", "false");
+      musicBackdrop.setAttribute("aria-hidden", "false");
+    }
+    function closeMusic(){
+      musicModal.classList.remove("open");
+      musicBackdrop.classList.remove("open");
+      musicModal.setAttribute("aria-hidden", "true");
+      musicBackdrop.setAttribute("aria-hidden", "true");
+    }
+    musicBtn.addEventListener("click", openMusic);
+    musicClose.addEventListener("click", closeMusic);
+    musicBackdrop.addEventListener("click", closeMusic);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && musicModal.classList.contains("open")) closeMusic();
+    });
 
     /* typewriter (slower, caret follows naturally) */
     (function titleTypewriter(){
@@ -1392,4 +1531,3 @@
   </script>
 </body>
 </html>
-
