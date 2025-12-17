@@ -711,17 +711,122 @@
       font-size: 12px;
       line-height: 1.35;
     }
+
+    /* ===== language gate ===== */
+    .lang-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+      z-index: 20000;
+      display:none;
+    }
+    .lang-modal{
+      position: fixed;
+      z-index: 20001;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(560px, calc(100vw - 26px));
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(12, 14, 18, 0.96);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.55);
+      overflow:hidden;
+      display:none;
+    }
+    .lang-modal.open, .lang-backdrop.open{ display:block; }
+    .lang-head{
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      position:relative;
+    }
+    .lang-head::after{
+      content:"";
+      position:absolute;
+      left:14px; right:14px; bottom:-1px;
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(36,240,255,0.40), transparent);
+      pointer-events:none;
+    }
+    .lang-title{
+      margin: 0;
+      font-size: 18px;
+      font-weight: 1000;
+      letter-spacing: 0.2px;
+      color: var(--text);
+    }
+    .lang-sub{
+      margin: 8px 0 0;
+      color: rgba(233,233,234,0.70);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .lang-body{
+      padding: 14px 16px 16px;
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .lang-choice{
+      flex: 1;
+      min-width: 200px;
+      border-radius: 16px;
+      border: 1px solid rgba(36,240,255,0.22);
+      background: rgba(10,12,16,0.50);
+      padding: 14px;
+      cursor:pointer;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      user-select:none;
+      text-align:left;
+    }
+    .lang-choice:hover{
+      transform: translateY(-2px);
+      border-color: rgba(36,240,255,0.40);
+      background: rgba(10,12,16,0.62);
+    }
+    .lang-choice .big{
+      font-weight: 1000;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .lang-choice .small{
+      margin-top: 6px;
+      color: rgba(233,233,234,0.70);
+      font-size: 13px;
+      line-height: 1.3;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Language gate -->
+  <div id="langBackdrop" class="lang-backdrop" aria-hidden="true"></div>
+  <div id="langModal" class="lang-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Choose language">
+    <div class="lang-head">
+      <h3 class="lang-title" id="langTitle">Choose your language</h3>
+      <p class="lang-sub" id="langSub">You can change this later.</p>
+    </div>
+    <div class="lang-body">
+      <button class="lang-choice" id="chooseEN" type="button">
+        <div class="big">English</div>
+        <div class="small">Use the site in English.</div>
+      </button>
+      <button class="lang-choice" id="chooseRU" type="button">
+        <div class="big">Русский</div>
+        <div class="small">Использовать сайт на русском.</div>
+      </button>
+    </div>
+  </div>
+
   <!-- Music modal -->
   <div id="musicBackdrop" class="modal-backdrop" aria-hidden="true"></div>
   <div id="musicModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Music Player">
     <div class="modal-head">
       <div>
-        <div class="modal-title">Music</div>
-        <div class="modal-sub">Note Block Hypixel Skyblock OST — Sky of Trees (Forest Islands)</div>
+        <div class="modal-title" id="musicModalTitle">Music</div>
+        <div class="modal-sub" id="musicModalSub">Note Block Hypixel Skyblock OST — Sky of Trees (Forest Islands)</div>
       </div>
       <button id="musicClose" class="modal-close" type="button">Close</button>
     </div>
@@ -737,7 +842,7 @@
         </iframe>
       </div>
     </div>
-    <div class="modal-foot">
+    <div class="modal-foot" id="musicModalFoot">
       If it does not start automatically, press Play in the video player. It will loop.
     </div>
   </div>
@@ -746,7 +851,7 @@
   <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="side-header">
-      <div class="side-title">Quick Jump</div>
+      <div class="side-title" id="drawerQuickJumpTitle">Quick Jump</div>
     </div>
     <div id="drawerLinks" class="side-links"></div>
     <div class="side-footer">
@@ -771,21 +876,24 @@
       <div class="header-actions">
         <button class="pill-link" id="musicBtn" type="button">Music</button>
 
-        <a class="pill-link" href="https://github.com/RevolutionGuides/revolutionmacroguide/issues" target="_blank" rel="noopener noreferrer">
+        <a class="pill-link" id="openIssuesBtn" href="https://github.com/RevolutionGuides/revolutionmacroguide/issues" target="_blank" rel="noopener noreferrer">
           Open Issues
         </a>
-        <a class="pill-link" href="https://github.com/RevolutionGuides/revolutionmacroguide/issues/new?template=troubleshooting.yml" target="_blank" rel="noopener noreferrer">
+        <a class="pill-link" id="submitFixBtn" href="https://github.com/RevolutionGuides/revolutionmacroguide/issues/new?template=troubleshooting.yml" target="_blank" rel="noopener noreferrer">
           Submit Fix
         </a>
+
+        <!-- language switch (change later) -->
+        <button class="pill-link" id="langBtn" type="button">EN</button>
       </div>
     </div>
 
     <div class="header-tabs">
       <button class="tab-btn active" id="tabGuideBtn" type="button" data-tab="guide">
-        <span class="tab-dot"></span> Clickpath Guide
+        <span class="tab-dot"></span> <span id="tabGuideText">Clickpath Guide</span>
       </button>
       <button class="tab-btn" id="tabTroubleBtn" type="button" data-tab="troubleshooting">
-        <span class="tab-dot"></span> Troubleshooting
+        <span class="tab-dot"></span> <span id="tabTroubleText">Troubleshooting</span>
       </button>
     </div>
   </header>
@@ -795,7 +903,7 @@
       <!-- Sidebar (Guide only) -->
       <aside id="side" class="side" aria-label="Quick Jump">
         <div class="side-header">
-          <div class="side-title">Quick Jump</div>
+          <div class="side-title" id="sideQuickJumpTitle">Quick Jump</div>
         </div>
 
         <!-- EXACTLY 6 items -->
@@ -817,42 +925,42 @@
           <!-- TROUBLESHOOTING TAB -->
           <div id="troubleshooting" class="tab-content">
             <div class="ts-head">
-              <h2 class="ts-title">Troubleshooting</h2>
-              <p class="ts-sub">
+              <h2 class="ts-title" id="tsTitle">Troubleshooting</h2>
+              <p class="ts-sub" id="tsSub">
                 Pick a category, search within it, and expand an entry for the exact fix. If you found a new solution, submit it using the button in the header.
               </p>
             </div>
 
             <div class="cat-grid" id="catGrid">
               <div class="cat-card" data-cat="mac">
-                <div class="cat-title">Mac</div>
-                <div class="cat-sub">Accessibility, permissions, macOS fixes</div>
+                <div class="cat-title" id="catMacTitle">Mac</div>
+                <div class="cat-sub" id="catMacSub">Accessibility, permissions, macOS fixes</div>
               </div>
               <div class="cat-card" data-cat="windows">
-                <div class="cat-title">Windows</div>
-                <div class="cat-sub">Capture mode, drivers, Windows fixes</div>
+                <div class="cat-title" id="catWinTitle">Windows</div>
+                <div class="cat-sub" id="catWinSub">Capture mode, drivers, Windows fixes</div>
               </div>
               <div class="cat-card" data-cat="macro">
-                <div class="cat-title">Macro</div>
-                <div class="cat-sub">Settings, patterns, routing, resets</div>
+                <div class="cat-title" id="catMacroTitle">Macro</div>
+                <div class="cat-sub" id="catMacroSub">Settings, patterns, routing, resets</div>
               </div>
               <div class="cat-card" data-cat="pro">
-                <div class="cat-title">Pro</div>
-                <div class="cat-sub">Advanced tips, high efficiency setups</div>
+                <div class="cat-title" id="catProTitle">Pro</div>
+                <div class="cat-sub" id="catProSub">Advanced tips, high efficiency setups</div>
               </div>
             </div>
 
             <div class="ts-toolbar">
               <div class="ts-search" title="Search current category">
-                <span class="icon">Search</span>
+                <span class="icon" id="tsSearchLabel">Search</span>
                 <input id="tsSearch" type="text" placeholder="Search fixes..." />
               </div>
 
               <button id="allCatsBtn" class="ts-filter-pill active" type="button">All</button>
-              <button class="ts-filter-pill" type="button" data-filter="mac">Mac</button>
-              <button class="ts-filter-pill" type="button" data-filter="windows">Windows</button>
-              <button class="ts-filter-pill" type="button" data-filter="macro">Macro</button>
-              <button class="ts-filter-pill" type="button" data-filter="pro">Pro</button>
+              <button class="ts-filter-pill" type="button" data-filter="mac" id="pillMac">Mac</button>
+              <button class="ts-filter-pill" type="button" data-filter="windows" id="pillWin">Windows</button>
+              <button class="ts-filter-pill" type="button" data-filter="macro" id="pillMacro">Macro</button>
+              <button class="ts-filter-pill" type="button" data-filter="pro" id="pillPro">Pro</button>
             </div>
 
             <div id="issues" class="issues-wrap"></div>
@@ -865,6 +973,190 @@
   <button id="backToTopMobile" type="button">Top</button>
 
   <script>
+    /* language (UI only; guide content not translated) */
+    const I18N = {
+      en: {
+        htmlLang: "en",
+        langBtn: "EN",
+        langGateTitle: "Choose your language",
+        langGateSub: "You can change this later.",
+        langChoiceENBig: "English",
+        langChoiceENSmall: "Use the site in English.",
+        langChoiceRUBig: "Русский",
+        langChoiceRUSmall: "Use the site in Russian.",
+        musicBtn: "Music",
+        openIssues: "Open Issues",
+        submitFix: "Submit Fix",
+        tabGuide: "Clickpath Guide",
+        tabTrouble: "Troubleshooting",
+        quickJump: "Quick Jump",
+        top: "Top",
+        typingWords: ["Guide", "Troubleshooting Help"],
+        tsTitle: "Troubleshooting",
+        tsSub: "Pick a category, search within it, and expand an entry for the exact fix. If you found a new solution, submit it using the button in the header.",
+        searchLabel: "Search",
+        searchPlaceholder: "Search fixes...",
+        all: "All",
+        catMacSub: "Accessibility, permissions, macOS fixes",
+        catWinSub: "Capture mode, drivers, Windows fixes",
+        catMacroSub: "Settings, patterns, routing, resets",
+        catProSub: "Advanced tips, high efficiency setups",
+        modalClose: "Close",
+        musicFoot: "If it does not start automatically, press Play in the video player. It will loop.",
+        loadingFixes: "Loading fixes…",
+        noMatches: "No matching entries yet.",
+        loadFail: "Could not load troubleshooting.json.",
+        copy: "Copy",
+        copied: "Copied",
+        failed: "Failed"
+      },
+      ru: {
+        htmlLang: "ru",
+        langBtn: "RU",
+        langGateTitle: "Выберите язык",
+        langGateSub: "Можно поменять позже.",
+        langChoiceENBig: "English",
+        langChoiceENSmall: "Использовать сайт на английском.",
+        langChoiceRUBig: "Русский",
+        langChoiceRUSmall: "Использовать сайт на русском.",
+        musicBtn: "Музыка",
+        openIssues: "Открыть Issues",
+        submitFix: "Отправить решение",
+        tabGuide: "Clickpath Guide",
+        tabTrouble: "Troubleshooting",
+        quickJump: "Быстрый переход",
+        top: "Наверх",
+        typingWords: ["Гайд", "Помощь"],
+        tsTitle: "Troubleshooting",
+        tsSub: "Выберите категорию, ищите внутри неё и раскрывайте пункт, чтобы увидеть точное решение. Если нашли новое решение — отправьте его через кнопку в шапке.",
+        searchLabel: "Поиск",
+        searchPlaceholder: "Искать решения...",
+        all: "Все",
+        catMacSub: "Доступ, разрешения, исправления macOS",
+        catWinSub: "Capture mode, драйверы, исправления Windows",
+        catMacroSub: "Настройки, паттерны, маршруты, ресеты",
+        catProSub: "Продвинутые советы, эффективность",
+        modalClose: "Закрыть",
+        musicFoot: "Если не запускается автоматически, нажмите Play в плеере. Будет играть по кругу.",
+        loadingFixes: "Загрузка решений…",
+        noMatches: "Пока нет совпадений.",
+        loadFail: "Не удалось загрузить troubleshooting.json.",
+        copy: "Копировать",
+        copied: "Скопировано",
+        failed: "Ошибка"
+      }
+    };
+
+    let CURRENT_LANG = "en";
+
+    function applyLanguage(lang){
+      if (!I18N[lang]) lang = "en";
+      CURRENT_LANG = lang;
+      const t = I18N[lang];
+
+      document.documentElement.lang = t.htmlLang;
+
+      const langBtn = document.getElementById("langBtn");
+      if (langBtn) langBtn.textContent = t.langBtn;
+
+      const langTitle = document.getElementById("langTitle");
+      const langSub = document.getElementById("langSub");
+      if (langTitle) langTitle.textContent = t.langGateTitle;
+      if (langSub) langSub.textContent = t.langGateSub;
+
+      const chooseEN = document.getElementById("chooseEN");
+      const chooseRU = document.getElementById("chooseRU");
+      if (chooseEN){
+        chooseEN.querySelector(".big").textContent = t.langChoiceENBig;
+        chooseEN.querySelector(".small").textContent = t.langChoiceENSmall;
+      }
+      if (chooseRU){
+        chooseRU.querySelector(".big").textContent = t.langChoiceRUBig;
+        chooseRU.querySelector(".small").textContent = t.langChoiceRUSmall;
+      }
+
+      const musicBtn = document.getElementById("musicBtn");
+      if (musicBtn) musicBtn.textContent = t.musicBtn;
+
+      const openIssuesBtn = document.getElementById("openIssuesBtn");
+      if (openIssuesBtn) openIssuesBtn.firstChild.nodeValue = t.openIssues;
+
+      const submitFixBtn = document.getElementById("submitFixBtn");
+      if (submitFixBtn) submitFixBtn.firstChild.nodeValue = t.submitFix;
+
+      const tabGuideText = document.getElementById("tabGuideText");
+      const tabTroubleText = document.getElementById("tabTroubleText");
+      if (tabGuideText) tabGuideText.textContent = t.tabGuide;
+      if (tabTroubleText) tabTroubleText.textContent = t.tabTrouble;
+
+      const sideQuick = document.getElementById("sideQuickJumpTitle");
+      const drawerQuick = document.getElementById("drawerQuickJumpTitle");
+      if (sideQuick) sideQuick.textContent = t.quickJump;
+      if (drawerQuick) drawerQuick.textContent = t.quickJump;
+
+      const sideTopBtn = document.getElementById("sideTopBtn");
+      const drawerTopBtn = document.getElementById("drawerTopBtn");
+      const backTopMobile = document.getElementById("backToTopMobile");
+      if (sideTopBtn) sideTopBtn.textContent = t.top;
+      if (drawerTopBtn) drawerTopBtn.textContent = t.top;
+      if (backTopMobile) backTopMobile.textContent = t.top;
+
+      const tsTitle = document.getElementById("tsTitle");
+      const tsSub = document.getElementById("tsSub");
+      if (tsTitle) tsTitle.textContent = t.tsTitle;
+      if (tsSub) tsSub.textContent = t.tsSub;
+
+      const tsSearchLabel = document.getElementById("tsSearchLabel");
+      const tsSearch = document.getElementById("tsSearch");
+      if (tsSearchLabel) tsSearchLabel.textContent = t.searchLabel;
+      if (tsSearch) tsSearch.placeholder = t.searchPlaceholder;
+
+      const allCatsBtn = document.getElementById("allCatsBtn");
+      if (allCatsBtn) allCatsBtn.textContent = t.all;
+
+      const catMacSub = document.getElementById("catMacSub");
+      const catWinSub = document.getElementById("catWinSub");
+      const catMacroSub = document.getElementById("catMacroSub");
+      const catProSub = document.getElementById("catProSub");
+      if (catMacSub) catMacSub.textContent = t.catMacSub;
+      if (catWinSub) catWinSub.textContent = t.catWinSub;
+      if (catMacroSub) catMacroSub.textContent = t.catMacroSub;
+      if (catProSub) catProSub.textContent = t.catProSub;
+
+      const musicModalTitle = document.getElementById("musicModalTitle");
+      const musicClose = document.getElementById("musicClose");
+      const musicFoot = document.getElementById("musicModalFoot");
+      if (musicModalTitle) musicModalTitle.textContent = t.musicBtn;
+      if (musicClose) musicClose.textContent = t.modalClose;
+      if (musicFoot) musicFoot.textContent = t.musicFoot;
+    }
+
+    function openLanguageGate(){
+      const bd = document.getElementById("langBackdrop");
+      const md = document.getElementById("langModal");
+      if (!bd || !md) return;
+      bd.classList.add("open");
+      md.classList.add("open");
+      bd.setAttribute("aria-hidden", "false");
+      md.setAttribute("aria-hidden", "false");
+    }
+
+    function closeLanguageGate(){
+      const bd = document.getElementById("langBackdrop");
+      const md = document.getElementById("langModal");
+      if (!bd || !md) return;
+      bd.classList.remove("open");
+      md.classList.remove("open");
+      bd.setAttribute("aria-hidden", "true");
+      md.setAttribute("aria-hidden", "true");
+    }
+
+    function setLanguage(lang){
+      localStorage.setItem("site_lang", lang);
+      applyLanguage(lang);
+      closeLanguageGate();
+    }
+
     /* keep header height synced */
     function syncHeaderHeight(){
       const header = document.getElementById("appHeader");
@@ -985,15 +1277,22 @@
       if (e.key === "Escape" && musicModal.classList.contains("open")) closeMusic();
     });
 
+    /* language button (change later) */
+    const langBtn = document.getElementById("langBtn");
+    if (langBtn){
+      langBtn.addEventListener("click", () => openLanguageGate());
+    }
+
     /* typewriter (slower, caret follows naturally) */
+    let TYPE_WORDS = ["Guide", "Troubleshooting Help"];
     (function titleTypewriter(){
       const el = document.getElementById("typingWord");
       if (!el) return;
 
-      const words = ["Guide", "Troubleshooting Help"];
       let w = 0, i = 0, deleting = false;
 
       function tick(){
+        const words = TYPE_WORDS;
         const word = words[w];
 
         if (!deleting){
@@ -1252,7 +1551,7 @@
         const btn = document.createElement("button");
         btn.className = "copy-btn";
         btn.type = "button";
-        btn.textContent = "Copy";
+        btn.textContent = I18N[CURRENT_LANG].copy;
 
         btn.addEventListener("click", async () => {
           const code = pre.querySelector("code");
@@ -1261,14 +1560,14 @@
           try{
             await navigator.clipboard.writeText(text);
             btn.classList.add("copied");
-            btn.textContent = "Copied";
+            btn.textContent = I18N[CURRENT_LANG].copied;
             setTimeout(() => {
               btn.classList.remove("copied");
-              btn.textContent = "Copy";
+              btn.textContent = I18N[CURRENT_LANG].copy;
             }, 900);
           }catch(e){
-            btn.textContent = "Failed";
-            setTimeout(() => (btn.textContent = "Copy"), 900);
+            btn.textContent = I18N[CURRENT_LANG].failed;
+            setTimeout(() => (btn.textContent = I18N[CURRENT_LANG].copy), 900);
           }
         });
 
@@ -1396,7 +1695,7 @@
       TROUBLE_LOADED = true;
 
       const container = document.getElementById("issues");
-      container.innerHTML = `<div class="empty">Loading fixes…</div>`;
+      container.innerHTML = `<div class="empty">${I18N[CURRENT_LANG].loadingFixes}</div>`;
 
       try{
         const data = await fetchTroubleJson();
@@ -1410,7 +1709,7 @@
         console.error(err);
         container.innerHTML = `
           <div class="empty">
-            Could not load <b>troubleshooting.json</b>.<br><br>
+            ${I18N[CURRENT_LANG].loadFail}<br><br>
             Quick fix: keep a copy at repo root as <b>/troubleshooting.json</b> OR rely on the raw GitHub URL.
           </div>`;
       }
@@ -1474,7 +1773,7 @@
       });
 
       if (!filtered.length){
-        container.innerHTML = `<div class="empty">No matching entries yet.</div>`;
+        container.innerHTML = `<div class="empty">${I18N[CURRENT_LANG].noMatches}</div>`;
         return;
       }
 
@@ -1513,10 +1812,55 @@
       });
     }
 
+    /* init language gate */
+    document.getElementById("chooseEN").addEventListener("click", () => setLanguage("en"));
+    document.getElementById("chooseRU").addEventListener("click", () => setLanguage("ru"));
+
     /* init */
     syncHeaderHeight();
     buildSixItemNav();
     openTab("guide");
+
+    (function initLang(){
+      const saved = localStorage.getItem("site_lang");
+      if (saved === "en" || saved === "ru"){
+        applyLanguage(saved);
+      } else {
+        applyLanguage("en");
+        openLanguageGate();
+      }
+
+      TYPE_WORDS = I18N[CURRENT_LANG].typingWords;
+
+      const btn = document.getElementById("langBtn");
+      if (btn){
+        btn.addEventListener("click", () => {
+          openLanguageGate();
+        });
+      }
+    })();
+
+    /* language toggle button behaviour */
+    document.getElementById("langBtn").addEventListener("click", () => {
+      openLanguageGate();
+    });
+
+    /* update typewriter words when language changes */
+    const _setLanguageOrig = setLanguage;
+    window.setLanguage = function(lang){
+      _setLanguageOrig(lang);
+      TYPE_WORDS = I18N[CURRENT_LANG].typingWords;
+    };
+
+    /* also allow ESC to close language gate only after selection exists */
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape"){
+        const saved = localStorage.getItem("site_lang");
+        if (saved === "en" || saved === "ru"){
+          closeLanguageGate();
+        }
+      }
+    });
 
     window.addEventListener("load", () => {
       syncHeaderHeight();
@@ -1531,3 +1875,4 @@
   </script>
 </body>
 </html>
+
