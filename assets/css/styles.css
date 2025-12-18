@@ -797,3 +797,21 @@ img {
 	border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Anchor / section offset so headings don’t hide under the fixed header */
+.guide-section,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+	scroll-margin-top: 110px;
+}
+
+@media (max-width: 720px) {
+	.guide-section,
+	.prose h1,
+	.prose h2,
+	.prose h3,
+	.prose h4 {
+		scroll-margin-top: 96px;
+	}
+}
