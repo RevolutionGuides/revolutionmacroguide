@@ -1,0 +1,13 @@
+# GitHub Pages Configuration
+# Ensure the site works properly on GitHub Pages
+
+# Enable Jekyll
+# (optional - leave blank to disable Jekyll processing)
+
+# Exclude from GitHub Pages build
+exclude:
+  - .github/
+  - .gitignore
+  - package.json
+  - troubleshooting.json.bak
+  - content/

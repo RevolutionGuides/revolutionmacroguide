@@ -1,0 +1,75 @@
+{
+	"sections": [
+		{
+			"id": "introduction",
+			"titleEn": "Introduction",
+			"titleRu": "Введение",
+			"file": "data/guides/01-introduction.md"
+		},
+		{
+			"id": "requirements",
+			"titleEn": "System Requirements",
+			"titleRu": "Системные требования",
+			"file": "data/guides/02-requirements.md"
+		},
+		{
+			"id": "installation",
+			"titleEn": "Installation",
+			"titleRu": "Установка",
+			"file": "data/guides/03-installation.md"
+		},
+		{
+			"id": "gather-tab",
+			"titleEn": "Gather Tab",
+			"titleRu": "Вкладка Gather",
+			"file": "data/guides/04-gather-tab.md",
+			"subsections": [
+				{
+					"id": "gather-fields",
+					"titleEn": "Fields",
+					"titleRu": "Поля"
+				},
+				{
+					"id": "gather-boosts",
+					"titleEn": "Boosts",
+					"titleRu": "Улучшения"
+				},
+				{
+					"id": "gather-settings",
+					"titleEn": "Settings",
+					"titleRu": "Настройки"
+				}
+			]
+		},
+		{
+			"id": "collect-tab",
+			"titleEn": "Collect Tab",
+			"titleRu": "Вкладка Collect",
+			"file": "data/guides/05-collect-tab.md"
+		},
+		{
+			"id": "planters-tab",
+			"titleEn": "Planters Tab",
+			"titleRu": "Вкладка Planters",
+			"file": "data/guides/06-planters-tab.md"
+		},
+		{
+			"id": "status-tab",
+			"titleEn": "Status Tab",
+			"titleRu": "Вкладка Status",
+			"file": "data/guides/07-status-tab.md"
+		},
+		{
+			"id": "tools-tab",
+			"titleEn": "Tools Tab",
+			"titleRu": "Вкладка Tools",
+			"file": "data/guides/08-tools-tab.md"
+		},
+		{
+			"id": "settings-tab",
+			"titleEn": "Settings Tab",
+			"titleRu": "Вкладка Settings",
+			"file": "data/guides/09-settings-tab.md"
+		}
+	]
+}
