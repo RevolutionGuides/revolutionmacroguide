@@ -1,6 +1,9 @@
 /**
  * Main Application
- * Orchestrates all components
+ * - Router init
+ * - Back-to-top
+ * - Drawer (Quick Jump) open/close works on ALL routes
+ * - Pre-loads guide sections to populate Quick Jump immediately
  */
 
 class App {
@@ -12,12 +15,77 @@ class App {
 		if (this.initialized) return;
 
 		try {
+			this.setupDrawer();
 			router.init();
 			this.setupBackToTop();
-			this.setupDrawer();
+
+			// Populate drawer ASAP (so hamburger works even before visiting Guide)
+			try {
+				const res = await fetch("data/guide-sections.json", { cache: "no-store" });
+				if (res.ok) {
+					const json = await res.json();
+					const sections = Array.isArray(json?.sections) ? json.sections : [];
+					Pages.renderDrawerGuideNav(sections);
+				}
+			} catch (e) {
+				// no hard fail
+				console.warn("Could not pre-load guide sections:", e);
+			}
+
 			this.initialized = true;
 		} catch (error) {
 			console.error("App initialization error:", error);
+		}
+	}
+
+	setupDrawer() {
+		const toggleBtn = document.getElementById("drawerToggle");
+		const closeBtn = document.getElementById("drawerClose");
+		const overlay = document.getElementById("drawerOverlay");
+		const drawer = document.getElementById("drawer");
+		const topBtn = document.getElementById("drawerTopBtn");
+
+		if (!toggleBtn || !closeBtn || !overlay || !drawer) return;
+
+		const open = () => {
+			drawer.hidden = false;
+			overlay.hidden = false;
+			requestAnimationFrame(() => {
+				drawer.classList.add("open");
+				overlay.classList.add("open");
+				toggleBtn.setAttribute("aria-expanded", "true");
+			});
+		};
+
+		const close = () => {
+			drawer.classList.remove("open");
+			overlay.classList.remove("open");
+			toggleBtn.setAttribute("aria-expanded", "false");
+			window.setTimeout(() => {
+				drawer.hidden = true;
+				overlay.hidden = true;
+			}, 180);
+		};
+
+		toggleBtn.addEventListener("click", () => {
+			const isOpen = toggleBtn.getAttribute("aria-expanded") === "true";
+			isOpen ? close() : open();
+		});
+
+		closeBtn.addEventListener("click", close);
+		overlay.addEventListener("click", close);
+
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Escape") close();
+		});
+
+		document.addEventListener("revo:drawer-close", close);
+
+		if (topBtn) {
+			topBtn.addEventListener("click", () => {
+				close();
+				window.scrollTo({ top: 0, behavior: "smooth" });
+			});
 		}
 	}
 
@@ -35,50 +103,6 @@ class App {
 		});
 		toggle();
 	}
-
-	setupDrawer() {
-		const menuBtn = document.getElementById("menuBtn");
-		const drawer = document.getElementById("mobileDrawer");
-		const backdrop = document.getElementById("drawerBackdrop");
-		const closeBtn = document.getElementById("drawerCloseBtn");
-
-		if (!menuBtn || !drawer || !backdrop) return;
-
-		const open = () => {
-			drawer.classList.add("open");
-			drawer.setAttribute("aria-hidden", "false");
-			backdrop.hidden = false;
-			menuBtn.setAttribute("aria-expanded", "true");
-			document.body.classList.add("no-scroll");
-		};
-
-		const close = () => {
-			drawer.classList.remove("open");
-			drawer.setAttribute("aria-hidden", "true");
-			backdrop.hidden = true;
-			menuBtn.setAttribute("aria-expanded", "false");
-			document.body.classList.remove("no-scroll");
-		};
-
-		menuBtn.addEventListener("click", () => {
-			if (drawer.classList.contains("open")) close();
-			else open();
-		});
-
-		backdrop.addEventListener("click", close);
-		if (closeBtn) closeBtn.addEventListener("click", close);
-
-		// Close on ESC
-		window.addEventListener("keydown", (e) => {
-			if (e.key === "Escape" && drawer.classList.contains("open")) close();
-		});
-
-		// Close drawer on route change (hashchange)
-		window.addEventListener("hashchange", close);
-
-		// Allow Pages.js to close drawer without importing App
-		document.addEventListener("revo:drawer-close", close);
-	}
 }
 
 const app = new App();
@@ -88,4 +112,5 @@ if (document.readyState === "loading") {
 } else {
 	app.init();
 }
+
 
