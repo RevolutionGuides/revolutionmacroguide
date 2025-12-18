@@ -5,20 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Revolution Macro Guide</title>
 
-  <!-- StackEdit base typography -->
-  <link rel="stylesheet" href="https://stackedit.io/style.css" />
-
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='40%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%234aa3ff' stop-opacity='1'/%3E%3Cstop offset='60%25' stop-color='%234aa3ff' stop-opacity='.35'/%3E%3Cstop offset='100%25' stop-color='%23090b10' stop-opacity='1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M18 40c7-12 12-17 18-17 6 0 9 4 10 10-2 10-8 15-18 15-5 0-8-2-10-8z' fill='%23090b10' opacity='.9'/%3E%3Cpath d='M20 38c6-10 10-14 16-14 5 0 7 3 8 8-2 8-7 12-16 12-4 0-6-2-8-6z' fill='%234aa3ff' opacity='.9'/%3E%3C/svg%3E" />
 
   <style>
     :root{
       /* Blue-only theme */
-      --pageBlue: #06122a;   /* deep base */
-      --pageBlue2:#050912;
+      --pageBlue:  #071b3c;
+      --pageBlue2: #050912;
 
-      --panel: rgba(12, 14, 18, 0.88);
-      --panel2: rgba(20, 24, 33, 0.70);
       --text: #e9e9ea;
       --muted: rgba(233,233,234,0.74);
 
@@ -26,8 +21,8 @@
       --stroke: rgba(255,255,255,0.16);
       --stroke2: rgba(74,163,255,0.34);
 
-      --shadow: 0 18px 46px rgba(0,0,0,0.28);
-      --shadow2: 0 10px 28px rgba(0,0,0,0.22);
+      --shadow: 0 18px 46px rgba(0,0,0,0.26);
+      --shadow2: 0 10px 28px rgba(0,0,0,0.20);
 
       --headerH: 96px;
 
@@ -41,24 +36,24 @@
     *{ box-sizing: border-box; }
     html{ scroll-behavior: auto; }
 
-    /* Upgraded background: blue gradients + subtle static noise */
+    /* Slightly brighter, more blue gradient (not too bright) */
     body{
       margin:0;
-      font-family: Arial, sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color: var(--text);
       min-height: 100vh;
       background:
-        radial-gradient(1100px 680px at 18% 8%, rgba(74,163,255,0.20), transparent 62%),
-        radial-gradient(860px 620px at 88% 18%, rgba(47,125,255,0.14), transparent 60%),
-        radial-gradient(900px 760px at 40% 120%, rgba(74,163,255,0.10), transparent 55%),
-        linear-gradient(180deg, var(--pageBlue), var(--pageBlue2) 58%, #040610);
+        radial-gradient(1100px 720px at 16% 6%, rgba(74,163,255,0.28), transparent 62%),
+        radial-gradient(900px 640px  at 88% 14%, rgba(47,125,255,0.20), transparent 60%),
+        radial-gradient(900px 760px  at 50% 118%, rgba(74,163,255,0.14), transparent 58%),
+        linear-gradient(180deg, var(--pageBlue) 0%, #061a3a 40%, var(--pageBlue2) 100%);
     }
     body::before{
       content:"";
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: 0.06;
+      opacity: 0.045; /* reduced so it doesn't make the page feel "dirty" */
       background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
       mix-blend-mode: overlay;
@@ -70,10 +65,10 @@
       top:0; left:0; right:0;
       z-index: 9999;
       padding: 14px 18px 12px;
-      background: rgba(10, 12, 16, 0.88);
+      background: rgba(10, 12, 16, 0.86);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.22);
     }
     .app-header::after{
       content:"";
@@ -145,10 +140,10 @@
       text-decoration:none;
       color: var(--text);
       border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(15,17,21,0.62);
+      background: rgba(15,17,21,0.58);
       padding: 10px 14px;
       border-radius: 14px;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       display:inline-flex;
       align-items:center;
@@ -158,28 +153,27 @@
     .pill-link:hover{
       transform: translateY(-1px);
       border-color: rgba(74,163,255,0.40);
-      background: rgba(15,17,21,0.78);
+      background: rgba(15,17,21,0.76);
     }
 
-    /* Hamburger now available on all screen sizes (since sidebar is gone) */
     .hamburger{
       display:inline-flex;
       width: 42px;
       height: 42px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(15,17,21,0.62);
+      background: rgba(15,17,21,0.58);
       color: var(--neon);
       cursor:pointer;
       align-items:center;
       justify-content:center;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
     }
     .hamburger:hover{
       transform: translateY(-1px);
       border-color: rgba(74,163,255,0.40);
-      background: rgba(15,17,21,0.78);
+      background: rgba(15,17,21,0.76);
     }
 
     .header-tabs{
@@ -192,7 +186,7 @@
 
     .tab-btn{
       border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(15,17,21,0.55);
+      background: rgba(15,17,21,0.52);
       color: var(--text);
       padding: 10px 14px;
       border-radius: 14px;
@@ -207,7 +201,7 @@
     .tab-btn:hover{
       transform: translateY(-1px);
       border-color: rgba(74,163,255,0.40);
-      background: rgba(15,17,21,0.72);
+      background: rgba(15,17,21,0.70);
     }
     .tab-btn.active{
       border-color: rgba(74,163,255,0.56);
@@ -232,7 +226,6 @@
       padding-bottom: 28px;
     }
 
-    /* Sidebar removed: force single column */
     .layout{
       display:grid;
       grid-template-columns: minmax(0, 1fr);
@@ -244,15 +237,15 @@
     .layout.no-side{
       grid-template-columns: minmax(0, 1fr);
     }
-
-    /* ===== sidebar (removed) ===== */
     .side{ display:none !important; }
 
     /* ===== panel ===== */
     .panel{
-      border: 1px solid rgba(255,255,255,0.16);
+      border: 1px solid rgba(74,163,255,0.18);
       border-radius: 18px;
-      background: rgba(15, 17, 21, 0.86);
+      background:
+        linear-gradient(180deg, rgba(74,163,255,0.08), rgba(12,14,18,0.78)),
+        rgba(12, 14, 18, 0.78);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow);
       padding: 18px;
@@ -267,40 +260,98 @@
       to{ opacity: 1; transform: translateY(0); }
     }
 
-    .stackedit__html{ color: var(--text); }
-    .stackedit__html h1, .stackedit__html h2, .stackedit__html h3, .stackedit__html h4,
-    .stackedit__html p, .stackedit__html li{ color: var(--text); }
-    .stackedit__html a{
-      color: var(--text);
-      text-decoration: underline;
-      text-decoration-color: rgba(74,163,255,0.40);
+    /* ===== GUIDE TYPOGRAPHY (NOT docs-like, not boring) ===== */
+    #guideContent{
+      max-width: 980px;
+      margin: 0 auto;
     }
 
-    /* REMOVE the weird lines on headers/subheaders */
+    /* you keep this class on the container; we control styling here */
+    .stackedit__html{
+      color: var(--text);
+      font-size: 15.5px;
+      line-height: 1.6;
+      letter-spacing: 0.1px;
+    }
+    .stackedit__html h1,
+    .stackedit__html h2,
+    .stackedit__html h3,
+    .stackedit__html h4{
+      color: var(--text);
+      margin: 18px 0 10px;
+      line-height: 1.15;
+    }
+
+    .stackedit__html h1{
+      font-size: 30px;
+      font-weight: 1000;
+      letter-spacing: 0.2px;
+      margin-top: 6px;
+    }
+
+    .stackedit__html h2{
+      font-size: 22px;
+      font-weight: 1000;
+      margin-top: 22px;
+    }
+
+    .stackedit__html h3{
+      font-size: 17px;
+      font-weight: 900;
+      opacity: 0.98;
+      margin-top: 18px;
+    }
+
+    .stackedit__html p{
+      margin: 10px 0;
+      color: rgba(233,233,234,0.90);
+    }
+
+    .stackedit__html ul,
+    .stackedit__html ol{
+      margin: 10px 0 14px;
+      padding-left: 22px;
+    }
+    .stackedit__html li{
+      margin: 6px 0;
+      color: rgba(233,233,234,0.88);
+    }
+
+    .stackedit__html a{
+      color: #a8d3ff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(74,163,255,0.35);
+    }
+    .stackedit__html a:hover{
+      color: #d4ebff;
+      border-bottom-color: rgba(74,163,255,0.60);
+    }
+
+    /* remove any “weird lines” if a guide export includes them */
     .stackedit__html h1,
     .stackedit__html h2{
       border: none !important;
       padding-bottom: 0 !important;
     }
     .stackedit__html h1::after,
-    .stackedit__html h2::after{
-      display:none !important;
-    }
+    .stackedit__html h2::after{ display:none !important; }
 
-    /* copy buttons for code blocks */
+    /* code styling */
     pre{
       position: relative;
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(10,12,16,0.72);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.20);
+      border: 1px solid rgba(74,163,255,0.18);
+      background: rgba(10,12,16,0.70);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
       padding: 14px;
       overflow: auto;
     }
-    pre code{
-      color: var(--text);
+    code{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 13px;
+    }
+    pre code{
+      color: rgba(233,233,234,0.94);
       line-height: 1.5;
     }
     .copy-btn{
@@ -308,24 +359,24 @@
       top:10px;
       right:10px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(15,17,21,0.70);
+      border: 1px solid rgba(74,163,255,0.22);
+      background: linear-gradient(180deg, rgba(74,163,255,0.16), rgba(15,17,21,0.70));
       color: rgba(233,233,234,0.92);
       padding: 8px 10px;
       cursor:pointer;
-      font-weight: 900;
+      font-weight: 1000;
       font-size: 12px;
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       user-select:none;
     }
     .copy-btn:hover{
       transform: translateY(-1px);
-      border-color: rgba(74,163,255,0.40);
-      background: rgba(15,17,21,0.85);
+      border-color: rgba(74,163,255,0.46);
+      background: linear-gradient(180deg, rgba(74,163,255,0.22), rgba(15,17,21,0.82));
     }
     .copy-btn.copied{
       color: var(--neon);
-      border-color: rgba(74,163,255,0.56);
+      border-color: rgba(74,163,255,0.62);
       box-shadow: 0 0 18px rgba(74,163,255,0.10);
     }
 
@@ -365,7 +416,7 @@
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(10,12,16,0.48);
+      background: rgba(10,12,16,0.44);
     }
     .ts-search input{
       width:100%;
@@ -382,7 +433,7 @@
 
     .ts-filter-pill{
       border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(15,17,21,0.55);
+      background: rgba(15,17,21,0.52);
       color: rgba(233,233,234,0.92);
       padding: 10px 12px;
       border-radius: 14px;
@@ -395,7 +446,7 @@
     .ts-filter-pill:hover{
       transform: translateY(-1px);
       border-color: rgba(74,163,255,0.40);
-      background: rgba(15,17,21,0.72);
+      background: rgba(15,17,21,0.70);
     }
     .ts-filter-pill.active{
       color: var(--neon);
@@ -411,12 +462,12 @@
     }
 
     .cat-card{
-      border: 1px solid rgba(74,163,255,0.24);
+      border: 1px solid rgba(74,163,255,0.22);
       border-radius: 16px;
-      background: rgba(10,12,16,0.42);
+      background: rgba(10,12,16,0.40);
       padding: 14px;
       cursor:pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       position: relative;
       overflow:hidden;
@@ -426,14 +477,14 @@
       content:"";
       position:absolute;
       inset:-40px;
-      background: radial-gradient(520px 180px at 20% 20%, rgba(74,163,255,0.18), transparent 60%);
+      background: radial-gradient(520px 180px at 20% 20%, rgba(74,163,255,0.16), transparent 60%);
       opacity: 0.9;
       pointer-events:none;
     }
     .cat-card:hover{
       transform: translateY(-2px);
       border-color: rgba(74,163,255,0.44);
-      background: rgba(10,12,16,0.55);
+      background: rgba(10,12,16,0.52);
     }
     .cat-card.active{
       border-color: rgba(74,163,255,0.62);
@@ -453,9 +504,9 @@
     .issue-block{
       border: 1px solid rgba(255,255,255,0.14);
       border-radius: 16px;
-      background: rgba(10,12,16,0.44);
+      background: rgba(10,12,16,0.42);
       overflow:hidden;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.14);
     }
 
     .issue-title{
@@ -475,7 +526,7 @@
       gap: 10px;
       user-select:none;
     }
-    .issue-title:hover{ background: rgba(15,17,21,0.35); }
+    .issue-title:hover{ background: rgba(15,17,21,0.32); }
 
     .issue-title .chev{
       color: rgba(233,233,234,0.70);
@@ -496,7 +547,7 @@
       color: rgba(233,233,234,0.70);
       border: 1px dashed rgba(255,255,255,0.18);
       border-radius: 16px;
-      background: rgba(10,12,16,0.30);
+      background: rgba(10,12,16,0.28);
     }
 
     /* mobile */
@@ -507,15 +558,15 @@
       z-index: 999;
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(10,12,16,0.72);
+      border: 1px solid rgba(74,163,255,0.22);
+      background: rgba(10,12,16,0.70);
       color: rgba(233,233,234,0.92);
       cursor:pointer;
       display:none;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.20);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
     }
     #backToTopMobile:hover{
-      border-color: rgba(74,163,255,0.40);
+      border-color: rgba(74,163,255,0.46);
       color: var(--neon);
     }
 
@@ -528,7 +579,6 @@
       .pill-link{ padding: 10px 12px; }
       .tab-btn{ padding: 10px 12px; }
 
-      /* Keep header from becoming huge; allow horizontal scroll instead of wrapping away buttons */
       .app-header{ padding: 10px 12px 10px; }
       .brand-title{ font-size: 16px; }
       .header-actions{
@@ -570,16 +620,15 @@
       overflow:auto;
       z-index: 9999;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid rgba(74,163,255,0.20);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)),
-        rgba(74, 163, 255, 0.14);
+        linear-gradient(180deg, rgba(74,163,255,0.14), rgba(10,12,16,0.70)),
+        rgba(74, 163, 255, 0.12);
       box-shadow: var(--shadow);
       display:none;
     }
     .drawer.open, .drawer-backdrop.open{ display:block; animation: fadeInUp 160ms ease both; }
 
-    /* drawer internal styles reused from sidebar */
     .side-header{
       padding: 14px 12px 10px;
       border-bottom: 1px solid rgba(255,255,255,0.10);
@@ -596,7 +645,7 @@
     .side-title{
       font-size: 13px;
       letter-spacing: 1px;
-      font-weight: 900;
+      font-weight: 1000;
       text-transform: uppercase;
       color: rgba(233,233,234,0.88);
       text-shadow: 0 0 16px rgba(74,163,255,0.10);
@@ -617,9 +666,9 @@
       font-weight: 900;
       padding: 10px 10px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(15,17,21,0.55);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border: 1px solid rgba(74,163,255,0.18);
+      background: rgba(15,17,21,0.50);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.14);
       transition: transform .15s ease, border-color .15s ease, background .15s ease;
       user-select:none;
       cursor:pointer;
@@ -627,25 +676,43 @@
     .side-links a:hover,
     .side-links button:hover{
       transform: translateY(-1px);
-      border-color: rgba(74,163,255,0.34);
-      background: rgba(15,17,21,0.70);
+      border-color: rgba(74,163,255,0.44);
+      background: rgba(15,17,21,0.66);
     }
     .side-links a.active{
       color: var(--neon);
-      border-color: rgba(74,163,255,0.56);
+      border-color: rgba(74,163,255,0.62);
       box-shadow: 0 0 0 1px rgba(74,163,255,0.12) inset, 0 0 26px rgba(74,163,255,0.10);
       text-shadow: 0 0 16px rgba(74,163,255,0.18);
     }
+
     .side-footer{
       padding: 0 10px 14px;
     }
+
+    /* FIX: Top button styling (no white button) */
     #drawerTopBtn{
       margin-top: 10px;
+      width: 100%;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
       font-weight: 1000;
+      border-radius: 14px;
+      border: 1px solid rgba(74,163,255,0.28);
+      background: linear-gradient(180deg, rgba(74,163,255,0.22), rgba(15,17,21,0.58));
+      color: rgba(233,233,234,0.92);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+      padding: 10px 12px;
+      cursor:pointer;
+    }
+    #drawerTopBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(74,163,255,0.52);
+      background: linear-gradient(180deg, rgba(74,163,255,0.28), rgba(15,17,21,0.72));
+      color: var(--neon);
     }
 
     /* ===== music modal ===== */
@@ -867,7 +934,7 @@
     </div>
   </div>
 
-  <!-- Quick Jump drawer (now primary on all devices) -->
+  <!-- Quick Jump drawer -->
   <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
   <div id="drawer" class="drawer" aria-hidden="true">
     <div class="side-header">
@@ -919,7 +986,6 @@
 
   <main class="app">
     <div class="layout no-side" id="layout">
-      <!-- Main content -->
       <section class="main">
         <div class="panel">
           <!-- GUIDE TAB -->
@@ -1211,7 +1277,6 @@
       const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
       if (btn) btn.classList.add("active");
 
-      /* Sidebar removed: always single-column layout */
       if (layout) layout.classList.add("no-side");
 
       closeDrawer();
@@ -1318,62 +1383,6 @@
       tick();
     })();
 
-    /* ===== GUIDE RENDER (NOW FETCHES EXTERNAL FILES) ===== */
-    function renderGuide(){
-      const el = document.getElementById("guideContent");
-      if (!el) return;
-
-      const path = (CURRENT_LANG === "ru") ? "content/guide.ru.html" : "content/guide.en.html";
-      const cacheBust = Date.now();
-
-      fetch(path + "?v=" + cacheBust, { cache: "no-store" })
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to load guide: " + path + " (" + res.status + ")");
-          return res.text();
-        })
-        .then(html => {
-          el.innerHTML = html;
-          addCopyButtons(el);
-          syncHeaderHeight();
-        })
-        .catch(err => {
-          console.error(err);
-          el.innerHTML = `<div class="empty">Could not load ${path}. Make sure it exists in your repo.</div>`;
-        });
-    }
-
-    function addCopyButtons(root){
-      const blocks = (root || document).querySelectorAll("pre");
-      blocks.forEach(pre => {
-        if (pre.querySelector(".copy-btn")) return;
-
-        const btn = document.createElement("button");
-        btn.className = "copy-btn";
-        btn.type = "button";
-        btn.textContent = I18N[CURRENT_LANG].copy;
-
-        btn.addEventListener("click", async () => {
-          const code = pre.querySelector("code");
-          const text = code ? code.innerText : pre.innerText;
-
-          try{
-            await navigator.clipboard.writeText(text);
-            btn.classList.add("copied");
-            btn.textContent = I18N[CURRENT_LANG].copied;
-            setTimeout(() => {
-              btn.classList.remove("copied");
-              btn.textContent = I18N[CURRENT_LANG].copy;
-            }, 900);
-          }catch(e){
-            btn.textContent = I18N[CURRENT_LANG].failed;
-            setTimeout(() => (btn.textContent = I18N[CURRENT_LANG].copy), 900);
-          }
-        });
-
-        pre.appendChild(btn);
-      });
-    }
-
     /* Build Quick Jump (drawer only; still exactly 6 items; still uses heading IDs unchanged) */
     function buildSixItemNav(){
       const drawerLinks = document.getElementById("drawerLinks");
@@ -1409,6 +1418,68 @@
         });
 
         drawerLinks.appendChild(a);
+      });
+    }
+
+    /* ===== GUIDE RENDER (fetch external files) ===== */
+    function renderGuide(){
+      const el = document.getElementById("guideContent");
+      if (!el) return;
+
+      const path = (CURRENT_LANG === "ru") ? "content/guide.ru.html" : "content/guide.en.html";
+      const cacheBust = Date.now();
+
+      fetch(path + "?v=" + cacheBust, { cache: "no-store" })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to load guide: " + path + " (" + res.status + ")");
+          return res.text();
+        })
+        .then(html => {
+          el.innerHTML = html;
+          addCopyButtons(el);
+          syncHeaderHeight();
+
+          /* FIX: rebuild Quick Jump AFTER guide HTML is in the DOM (mobile bug fix) */
+          buildSixItemNav();
+          setTimeout(buildSixItemNav, 120);  // small retry for slower phones
+          setTimeout(buildSixItemNav, 320);  // second retry to be extra safe
+        })
+        .catch(err => {
+          console.error(err);
+          el.innerHTML = `<div class="empty">Could not load ${path}. Make sure it exists in your repo.</div>`;
+          buildSixItemNav();
+        });
+    }
+
+    function addCopyButtons(root){
+      const blocks = (root || document).querySelectorAll("pre");
+      blocks.forEach(pre => {
+        if (pre.querySelector(".copy-btn")) return;
+
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.type = "button";
+        btn.textContent = I18N[CURRENT_LANG].copy;
+
+        btn.addEventListener("click", async () => {
+          const code = pre.querySelector("code");
+          const text = code ? code.innerText : pre.innerText;
+
+          try{
+            await navigator.clipboard.writeText(text);
+            btn.classList.add("copied");
+            btn.textContent = I18N[CURRENT_LANG].copied;
+            setTimeout(() => {
+              btn.classList.remove("copied");
+              btn.textContent = I18N[CURRENT_LANG].copy;
+            }, 900);
+          }catch(e){
+            btn.textContent = I18N[CURRENT_LANG].failed;
+            setTimeout(() => (btn.textContent = I18N[CURRENT_LANG].copy), 900);
+          }
+        });
+
+        pre.appendChild(btn);
       });
     }
 
@@ -1591,7 +1662,7 @@
       TYPE_WORDS = I18N[CURRENT_LANG].typingWords;
 
       renderGuide();
-      setTimeout(buildSixItemNav, 200);
+      buildSixItemNav(); /* safe initial build (will be rebuilt after guide loads) */
     })();
 
     window.addEventListener("keydown", (e) => {
@@ -1600,6 +1671,7 @@
         if (saved === "en" || saved === "ru"){
           closeLanguageGate();
         }
+        if (drawer.classList.contains("open")) closeDrawer();
       }
     });
 
@@ -1618,8 +1690,9 @@
     const _oldApplyLanguage = applyLanguage;
     applyLanguage = function(lang){
       _oldApplyLanguage(lang);
-      setTimeout(buildSixItemNav, 200);
+      // renderGuide() will rebuild nav after fetch completes
     };
   </script>
 </body>
 </html>
+
