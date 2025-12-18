@@ -25,6 +25,7 @@
 		/>
 		<link rel="stylesheet" href="assets/css/styles.css" />
 	</head>
+
 	<body>
 		<noscript>
 			<div class="noscript-banner">
@@ -40,16 +41,16 @@
 
 		<header class="site-header">
 			<div class="container header-grid">
-				<!-- Hamburger (ALWAYS present) -->
+				<!-- Mobile drawer toggle (your hamburger) -->
 				<button
-					class="icon-btn"
-					id="menuBtn"
+					class="icon-btn drawer-toggle"
 					type="button"
-					aria-label="Open menu"
-					aria-controls="mobileDrawer"
+					aria-label="Open Quick Jump"
+					aria-controls="drawer"
 					aria-expanded="false"
+					id="drawerToggle"
 				>
-					<span class="icon-bars" aria-hidden="true"><span></span></span>
+					<span class="icon-lines" aria-hidden="true"></span>
 				</button>
 
 				<a href="#/guide" class="brand" aria-label="Revolution Macro home">
@@ -89,32 +90,28 @@
 			</div>
 		</header>
 
-		<!-- Drawer + backdrop MUST be outside the header and MUST exist -->
-		<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-
-		<aside class="drawer" id="mobileDrawer" aria-hidden="true">
+		<!-- Drawer (Quick Jump) -->
+		<div class="drawer-overlay" id="drawerOverlay" hidden></div>
+		<aside class="drawer" id="drawer" aria-label="Quick Jump" hidden>
 			<div class="drawer-head">
-				<div class="drawer-title">Menu</div>
-				<button
-					class="icon-btn"
-					id="drawerCloseBtn"
-					type="button"
-					aria-label="Close menu"
-				>
-					✕
+				<div class="drawer-title">Quick Jump</div>
+				<button class="icon-btn" type="button" aria-label="Close" id="drawerClose">
+					<span class="icon-x" aria-hidden="true"></span>
 				</button>
 			</div>
 
-			<nav class="drawer-nav" aria-label="Mobile navigation">
-				<a href="#/guide" class="drawer-link">Guide</a>
-				<a href="#/troubleshooting" class="drawer-link">Troubleshooting</a>
-				<a href="#/changelog" class="drawer-link">Changelog</a>
-			</nav>
+			<div class="drawer-body">
+				<div class="drawer-section">
+					<div class="drawer-label">Tabs</div>
+					<div id="drawerGuideNav" class="drawer-links">
+						<!-- Filled by JS -->
+					</div>
+				</div>
 
-			<div class="drawer-section">
-				<div class="drawer-label">Quick Jump</div>
-				<div id="drawerGuideNav" class="drawer-chapters">
-					<!-- Populated by pages.js -->
+				<div class="drawer-footer">
+					<button class="btn btn-ghost w-full" type="button" id="drawerTopBtn">
+						↑ Top
+					</button>
 				</div>
 			</div>
 		</aside>
@@ -141,4 +138,5 @@
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>
+
 
