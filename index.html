@@ -41,11 +41,11 @@
 
 		<header class="site-header">
 			<div class="container header-grid">
-				<!-- Mobile drawer toggle (your hamburger) -->
+				<!-- Mobile drawer toggle (hamburger) -->
 				<button
 					class="icon-btn drawer-toggle"
 					type="button"
-					aria-label="Open Quick Jump"
+					aria-label="Open quick jump"
 					aria-controls="drawer"
 					aria-expanded="false"
 					id="drawerToggle"
@@ -54,10 +54,10 @@
 				</button>
 
 				<a href="#/guide" class="brand" aria-label="Revolution Macro home">
-  <div class="brand-mark">RM</div>
-  <span class="brand-title-single">Revolution Macro Guide</span>
-</a>
-				
+					<div class="brand-mark">RM</div>
+					<span class="brand-title-single">Revolution Macro Guide</span>
+				</a>
+
 				<nav class="nav-links" aria-label="Primary">
 					<a href="#/guide" class="nav-link" id="navGuide">Guide</a>
 					<a href="#/troubleshooting" class="nav-link" id="navTrouble"
@@ -87,12 +87,18 @@
 			</div>
 		</header>
 
-		<!-- Drawer (Quick Jump) -->
-		<div class="drawer-overlay" id="drawerOverlay" hidden></div>
-		<aside class="drawer" id="drawer" aria-label="Quick Jump" hidden>
+		<!-- Drawer overlay + drawer -->
+		<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+
+		<aside class="drawer" id="drawer" aria-label="Quick jump" aria-hidden="true">
 			<div class="drawer-head">
 				<div class="drawer-title">Quick Jump</div>
-				<button class="icon-btn" type="button" aria-label="Close" id="drawerClose">
+				<button
+					class="icon-btn"
+					type="button"
+					aria-label="Close quick jump"
+					id="drawerClose"
+				>
 					<span class="icon-x" aria-hidden="true"></span>
 				</button>
 			</div>
@@ -135,5 +141,3 @@
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>
-
-
