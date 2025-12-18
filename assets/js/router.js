@@ -46,6 +46,9 @@ class Router {
 	}
 
 	async navigate() {
+		// Close drawer on any route change (hamburger quick jump)
+		document.dispatchEvent(new CustomEvent('revo:drawer-close'));
+
 		const path = this.getCurrentPath();
 		const route = this.routes[path] || this.routes['/'];
 
@@ -75,3 +78,4 @@ class Router {
 }
 
 const router = new Router();
+
