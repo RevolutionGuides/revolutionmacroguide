@@ -2,8 +2,8 @@
  * Main Application
  * - Router init
  * - Back-to-top
- * - Drawer (Quick Jump) open/close works on ALL routes
- * - Pre-loads guide sections to populate Quick Jump immediately
+ * - Drawer (Quick Jump): open/close, overlay, ESC
+ * - Preload guide sections to populate quick-jump immediately
  */
 
 class App {
@@ -19,87 +19,95 @@ class App {
 			router.init();
 			this.setupBackToTop();
 
-			// Populate drawer ASAP (so hamburger works even before visiting Guide)
+			// Preload sections so hamburger menu has links immediately
 			try {
-				const res = await fetch("data/guide-sections.json", { cache: "no-store" });
+				const res = await fetch('data/guide-sections.json', { cache: 'no-store' });
 				if (res.ok) {
 					const json = await res.json();
 					const sections = Array.isArray(json?.sections) ? json.sections : [];
-					Pages.renderDrawerGuideNav(sections);
+					if (window.Pages?.renderDrawerGuideNav) {
+						window.Pages.renderDrawerGuideNav(sections);
+					}
 				}
 			} catch (e) {
-				// no hard fail
-				console.warn("Could not pre-load guide sections:", e);
+				console.warn('Quick Jump preload failed:', e);
 			}
 
 			this.initialized = true;
 		} catch (error) {
-			console.error("App initialization error:", error);
+			console.error('App initialization error:', error);
 		}
 	}
 
 	setupDrawer() {
-		const toggleBtn = document.getElementById("drawerToggle");
-		const closeBtn = document.getElementById("drawerClose");
-		const overlay = document.getElementById("drawerOverlay");
-		const drawer = document.getElementById("drawer");
-		const topBtn = document.getElementById("drawerTopBtn");
+		const toggleBtn = document.getElementById('drawerToggle');
+		const closeBtn = document.getElementById('drawerClose');
+		const overlay = document.getElementById('drawerOverlay');
+		const drawer = document.getElementById('drawer');
+		const topBtn = document.getElementById('drawerTopBtn');
 
-		if (!toggleBtn || !closeBtn || !overlay || !drawer) return;
+		if (!toggleBtn || !overlay || !drawer) return;
 
 		const open = () => {
-			drawer.hidden = false;
 			overlay.hidden = false;
+			drawer.hidden = false;
+
+			// next tick so transitions apply
 			requestAnimationFrame(() => {
-				drawer.classList.add("open");
-				overlay.classList.add("open");
-				toggleBtn.setAttribute("aria-expanded", "true");
+				overlay.classList.add('open');
+				drawer.classList.add('open');
+				toggleBtn.setAttribute('aria-expanded', 'true');
+				overlay.setAttribute('aria-hidden', 'false');
+				drawer.setAttribute('aria-hidden', 'false');
 			});
 		};
 
 		const close = () => {
-			drawer.classList.remove("open");
-			overlay.classList.remove("open");
-			toggleBtn.setAttribute("aria-expanded", "false");
+			overlay.classList.remove('open');
+			drawer.classList.remove('open');
+			toggleBtn.setAttribute('aria-expanded', 'false');
+			overlay.setAttribute('aria-hidden', 'true');
+			drawer.setAttribute('aria-hidden', 'true');
+
+			// hide after transition
 			window.setTimeout(() => {
-				drawer.hidden = true;
 				overlay.hidden = true;
+				drawer.hidden = true;
 			}, 180);
 		};
 
-		toggleBtn.addEventListener("click", () => {
-			const isOpen = toggleBtn.getAttribute("aria-expanded") === "true";
+		toggleBtn.addEventListener('click', () => {
+			const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
 			isOpen ? close() : open();
 		});
 
-		closeBtn.addEventListener("click", close);
-		overlay.addEventListener("click", close);
+		overlay.addEventListener('click', close);
+		closeBtn?.addEventListener('click', close);
 
-		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape") close();
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') close();
 		});
 
-		document.addEventListener("revo:drawer-close", close);
+		// allow Router to close drawer on navigation
+		document.addEventListener('revo:drawer-close', close);
 
-		if (topBtn) {
-			topBtn.addEventListener("click", () => {
-				close();
-				window.scrollTo({ top: 0, behavior: "smooth" });
-			});
-		}
+		topBtn?.addEventListener('click', () => {
+			close();
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
 	}
 
 	setupBackToTop() {
-		const backToTopBtn = document.getElementById("backToTopBtn");
+		const backToTopBtn = document.getElementById('backToTopBtn');
 		if (!backToTopBtn) return;
 
 		const toggle = () => {
-			backToTopBtn.classList.toggle("visible", window.scrollY > 320);
+			backToTopBtn.classList.toggle('visible', window.scrollY > 320);
 		};
 
-		window.addEventListener("scroll", toggle);
-		backToTopBtn.addEventListener("click", () => {
-			window.scrollTo({ top: 0, behavior: "smooth" });
+		window.addEventListener('scroll', toggle);
+		backToTopBtn.addEventListener('click', () => {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		});
 		toggle();
 	}
@@ -107,10 +115,11 @@ class App {
 
 const app = new App();
 
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", () => app.init());
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', () => app.init());
 } else {
 	app.init();
 }
+
 
 
