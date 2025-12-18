@@ -1,143 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="description"
-			content="Complete guide to Revolution Macro for Bee Swarm Simulator"
-		/>
-		<meta property="og:title" content="Revolution Macro Guide" />
-		<meta
-			property="og:description"
-			content="Learn how to use Revolution Macro with our comprehensive guide"
-		/>
-		<title>Revolution Macro Guide</title>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<link
-			rel="icon"
-			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='40%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%231b4be6'/%3E%3Cstop offset='60%25' stop-color='%2340bff8' stop-opacity='.65'/%3E%3Cstop offset='100%25' stop-color='%23ffffff'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M18 40c0-12 10-26 20-26 8 0 12 7 12 15 0 12-8 22-21 22-7 0-11-4-11-11z' fill='%230c2b7a' opacity='.85'/%3E%3C/svg%3E"
-		/>
+	<title>Revolution Macro Guide</title>
 
-		<link
-			href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="stylesheet" href="assets/css/styles.css" />
-	</head>
+	<meta name="description" content="Complete guide to Revolution Macro for Bee Swarm Simulator" />
+	<meta property="og:title" content="Revolution Macro Guide" />
+	<meta property="og:description" content="Learn how to use Revolution Macro with our comprehensive guide" />
 
-	<body>
-		<noscript>
-			<div class="noscript-banner">
-				<div class="noscript-content">
-					<h1>JavaScript Required</h1>
-					<p>
-						This site requires JavaScript to display the guide, troubleshooting,
-						and live changelog.
-					</p>
-				</div>
-			</div>
-		</noscript>
+	<link
+		rel="icon"
+		href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b4be6'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='32' fill='white'%3ERM%3C/text%3E%3C/svg%3E"
+	/>
 
-		<header class="site-header">
-			<div class="container header-grid">
-				<!-- Mobile drawer toggle (hamburger) -->
-				<button
-					class="icon-btn drawer-toggle"
-					type="button"
-					aria-label="Open quick jump"
-					aria-controls="drawer"
-					aria-expanded="false"
-					id="drawerToggle"
-				>
-					<span class="icon-lines" aria-hidden="true"></span>
-				</button>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+		rel="stylesheet"
+	/>
 
-				<a href="#/guide" class="brand" aria-label="Revolution Macro home">
-					<div class="brand-mark">RM</div>
-					<span class="brand-title-single">Revolution Macro Guide</span>
-				</a>
+	<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
 
-				<nav class="nav-links" aria-label="Primary">
-					<a href="#/guide" class="nav-link" id="navGuide">Guide</a>
-					<a href="#/troubleshooting" class="nav-link" id="navTrouble"
-						>Troubleshooting</a
-					>
-					<a href="#/changelog" class="nav-link" id="navChangelog">Changelog</a>
-				</nav>
+<body>
+	<noscript>
+		<div class="noscript-banner">
+			<h1>JavaScript Required</h1>
+			<p>This site requires JavaScript to function.</p>
+		</div>
+	</noscript>
 
-				<div class="header-actions">
-					<a
-						href="https://github.com/nosyliam/revolution-macro"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="btn btn-ghost"
-						>GitHub</a
-					>
-					<a
-						href="https://github.com/nosyliam/revolution-macro/releases/latest"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="btn btn-primary"
-						id="downloadBtn"
-					>
-						Download
-					</a>
-				</div>
-			</div>
-		</header>
+	<!-- ================= HEADER ================= -->
+	<header class="site-header">
+		<div class="header-inner">
 
-		<!-- Drawer overlay + drawer -->
-		<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+			<!-- HAMBURGER (ALWAYS VISIBLE) -->
+			<button
+				class="icon-btn drawer-toggle"
+				id="drawerToggle"
+				type="button"
+				aria-label="Open Quick Jump"
+				aria-controls="drawer"
+				aria-expanded="false"
+			>
+				<span class="icon-lines"></span>
+			</button>
 
-		<aside class="drawer" id="drawer" aria-label="Quick jump" aria-hidden="true">
-			<div class="drawer-head">
-				<div class="drawer-title">Quick Jump</div>
-				<button
-					class="icon-btn"
-					type="button"
-					aria-label="Close quick jump"
-					id="drawerClose"
-				>
-					<span class="icon-x" aria-hidden="true"></span>
-				</button>
+			<!-- BRAND -->
+			<a href="#/guide" class="brand">
+				<span class="brand-title">Revolution Macro Guide</span>
+			</a>
+
+			<!-- NAV (COMPACT) -->
+			<nav class="nav-links">
+				<a href="#/guide" class="nav-link">Guide</a>
+				<a href="#/troubleshooting" class="nav-link">Troubleshooting</a>
+				<a href="#/changelog" class="nav-link">Changelog</a>
+			</nav>
+
+			<!-- ACTIONS -->
+			<div class="header-actions">
+				<a
+					class="btn btn-ghost"
+					href="https://github.com/RevolutionGuides/revolutionmacroguide"
+					target="_blank"
+					rel="noopener noreferrer"
+				>GitHub</a>
+
+				<a
+					class="btn btn-primary"
+					href="https://github.com/nosyliam/revolution-macro/releases/latest"
+					target="_blank"
+					rel="noopener noreferrer"
+				>Download</a>
 			</div>
 
-			<div class="drawer-body">
-				<div class="drawer-section">
-					<div class="drawer-label">Tabs</div>
-					<div id="drawerGuideNav" class="drawer-links">
-						<!-- Filled by JS -->
-					</div>
-				</div>
+		</div>
+	</header>
 
-				<div class="drawer-footer">
-					<button class="btn btn-ghost w-full" type="button" id="drawerTopBtn">
-						↑ Top
-					</button>
-				</div>
+	<!-- ================= QUICK JUMP DRAWER ================= -->
+	<div class="drawer-overlay" id="drawerOverlay" hidden></div>
+
+	<aside class="drawer" id="drawer" hidden>
+		<div class="drawer-head">
+			<div class="drawer-title">Quick Jump</div>
+			<button class="icon-btn" id="drawerClose" aria-label="Close">
+				<span class="icon-x"></span>
+			</button>
+		</div>
+
+		<div class="drawer-body">
+			<div id="drawerGuideNav" class="drawer-links">
+				<!-- Filled by Pages.renderDrawerGuideNav -->
 			</div>
-		</aside>
 
-		<main class="page-root">
-			<div id="app" class="app-shell"></div>
-		</main>
+			<button class="btn btn-ghost w-full" id="drawerTopBtn">↑ Top</button>
+		</div>
+	</aside>
 
-		<button
-			id="backToTopBtn"
-			type="button"
-			class="back-to-top"
-			aria-label="Back to top"
-		>
-			↑ Top
-		</button>
+	<!-- ================= APP ROOT ================= -->
+	<main class="page-root">
+		<div id="app" class="app-shell"></div>
+	</main>
 
-		<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-		<script src="assets/js/markdown.js"></script>
-		<script src="assets/js/api.js"></script>
-		<script src="assets/js/pages.js"></script>
-		<script src="assets/js/router.js"></script>
-		<script src="assets/js/app.js"></script>
-	</body>
+	<!-- ================= BACK TO TOP ================= -->
+	<button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
+		↑
+	</button>
+
+	<!-- ================= SCRIPTS ================= -->
+	<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+
+	<script src="assets/js/markdown.js"></script>
+	<script src="assets/js/api.js"></script>
+	<script src="assets/js/pages.js"></script>
+	<script src="assets/js/router.js"></script>
+	<script src="assets/js/app.js"></script>
+</body>
 </html>
+
