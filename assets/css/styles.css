@@ -984,13 +984,6 @@ img {
 	}
 }
 
-@media (min-width: 981px) {
-	/* Hide hamburger on desktop */
-	#menuBtn {
-		display: none;
-	}
-}
-
 @media (max-width: 720px) {
 	.page-hero {
 		padding: 1.45rem 1.25rem;
