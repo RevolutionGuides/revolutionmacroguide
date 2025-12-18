@@ -1,125 +1,99 @@
-/**
- * Main Application
- * - Router init
- * - Back-to-top
- * - Drawer (Quick Jump): open/close, overlay, ESC
- * - Preload guide sections to populate quick-jump immediately
+/* assets/js/app.js
+ * App bootstrap: router init, drawer open/close, back-to-top, and drawer nav preload.
  */
 
-class App {
-	constructor() {
-		this.initialized = false;
-	}
+(function () {
+  function qs(sel) { return document.querySelector(sel); }
 
-	async init() {
-		if (this.initialized) return;
+  const drawer = qs("#drawer");
+  const overlay = qs("#drawerOverlay");
+  const toggle = qs("#drawerToggle");
+  const closeBtn = qs("#drawerClose");
+  const topBtn = qs("#drawerTopBtn");
+  const backToTop = qs("#backToTopBtn");
 
-		try {
-			this.setupDrawer();
-			router.init();
-			this.setupBackToTop();
+  function setDrawerOpen(open) {
+    if (!drawer || !overlay || !toggle) return;
 
-			// Preload sections so hamburger menu has links immediately
-			try {
-				const res = await fetch('data/guide-sections.json', { cache: 'no-store' });
-				if (res.ok) {
-					const json = await res.json();
-					const sections = Array.isArray(json?.sections) ? json.sections : [];
-					if (window.Pages?.renderDrawerGuideNav) {
-						window.Pages.renderDrawerGuideNav(sections);
-					}
-				}
-			} catch (e) {
-				console.warn('Quick Jump preload failed:', e);
-			}
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
 
-			this.initialized = true;
-		} catch (error) {
-			console.error('App initialization error:', error);
-		}
-	}
+    if (open) {
+      drawer.hidden = false;
+      overlay.hidden = false;
+      // next frame for transitions
+      requestAnimationFrame(() => {
+        drawer.classList.add("open");
+        overlay.classList.add("open");
+      });
+    } else {
+      drawer.classList.remove("open");
+      overlay.classList.remove("open");
+      // wait for transition
+      window.setTimeout(() => {
+        drawer.hidden = true;
+        overlay.hidden = true;
+      }, 200);
+    }
+  }
 
-	setupDrawer() {
-		const toggleBtn = document.getElementById('drawerToggle');
-		const closeBtn = document.getElementById('drawerClose');
-		const overlay = document.getElementById('drawerOverlay');
-		const drawer = document.getElementById('drawer');
-		const topBtn = document.getElementById('drawerTopBtn');
+  function closeDrawer() { setDrawerOpen(false); }
+  function openDrawer() { setDrawerOpen(true); }
 
-		if (!toggleBtn || !overlay || !drawer) return;
+  // Drawer event wiring
+  if (toggle) toggle.addEventListener("click", () => openDrawer());
+  if (closeBtn) closeBtn.addEventListener("click", () => closeDrawer());
+  if (overlay) overlay.addEventListener("click", () => closeDrawer());
 
-		const open = () => {
-			overlay.hidden = false;
-			drawer.hidden = false;
+  // Allow Pages to close drawer via event
+  document.addEventListener("revo:drawer-close", () => closeDrawer());
 
-			// next tick so transitions apply
-			requestAnimationFrame(() => {
-				overlay.classList.add('open');
-				drawer.classList.add('open');
-				toggleBtn.setAttribute('aria-expanded', 'true');
-				overlay.setAttribute('aria-hidden', 'false');
-				drawer.setAttribute('aria-hidden', 'false');
-			});
-		};
+  // ESC closes drawer
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDrawer();
+  });
 
-		const close = () => {
-			overlay.classList.remove('open');
-			drawer.classList.remove('open');
-			toggleBtn.setAttribute('aria-expanded', 'false');
-			overlay.setAttribute('aria-hidden', 'true');
-			drawer.setAttribute('aria-hidden', 'true');
+  // Drawer "Top" button
+  if (topBtn) {
+    topBtn.addEventListener("click", () => {
+      closeDrawer();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
-			// hide after transition
-			window.setTimeout(() => {
-				overlay.hidden = true;
-				drawer.hidden = true;
-			}, 180);
-		};
+  // Back to top floating button
+  function syncBackToTop() {
+    if (!backToTop) return;
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    backToTop.classList.toggle("show", y > 420);
+  }
+  window.addEventListener("scroll", syncBackToTop, { passive: true });
+  syncBackToTop();
 
-		toggleBtn.addEventListener('click', () => {
-			const isOpen = toggleBtn.getAttribute('aria-expanded') === 'true';
-			isOpen ? close() : open();
-		});
+  if (backToTop) {
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
-		overlay.addEventListener('click', close);
-		closeBtn?.addEventListener('click', close);
+  // Preload guide-sections.json so drawer has the 6 tabs even before visiting Guide
+  (async () => {
+    try {
+      const sections = await Pages.getGuideSections();
+      Pages.renderDrawerGuideNav(sections);
+    } catch (e) {
+      // If guide-sections.json fails, drawer stays empty; Guide page will show the error card.
+      console.error(e);
+    }
+  })();
 
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') close();
-		});
+  // Start router (your router.js already creates `router`)
+  if (window.router && typeof window.router.init === "function") {
+    window.router.init();
+  } else if (typeof router !== "undefined" && router?.init) {
+    router.init();
+  }
+})();
 
-		// allow Router to close drawer on navigation
-		document.addEventListener('revo:drawer-close', close);
-
-		topBtn?.addEventListener('click', () => {
-			close();
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		});
-	}
-
-	setupBackToTop() {
-		const backToTopBtn = document.getElementById('backToTopBtn');
-		if (!backToTopBtn) return;
-
-		const toggle = () => {
-			backToTopBtn.classList.toggle('visible', window.scrollY > 320);
-		};
-
-		window.addEventListener('scroll', toggle);
-		backToTopBtn.addEventListener('click', () => {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		});
-		toggle();
-	}
-}
-
-const app = new App();
-
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', () => app.init());
-} else {
-	app.init();
-}
 
 
 
