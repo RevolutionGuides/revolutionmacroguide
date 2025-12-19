@@ -6,6 +6,20 @@
 class Pages {
 	static _sectionsCache = null;
 
+	// ---- CONFIG (your repos + labels) ----
+	static GUIDE_REPO_OWNER = "RevolutionGuides";
+	static GUIDE_REPO_NAME = "revolutionmacroguide";
+
+	// These must match your actual label names in GitHub (case-insensitive in our filter)
+	static LABELS = {
+		APPROVED: "approved",
+		WINDOWS: "windows",
+		MAC: "mac",
+		MACOS: "macos", // optional if you use "macos" instead of "mac"
+		MACRO: "macro",
+		PRO: "pro",
+	};
+
 	static async loadGuideSections() {
 		if (Pages._sectionsCache) return Pages._sectionsCache;
 
@@ -18,8 +32,11 @@ class Pages {
 		return sections;
 	}
 
+	/**
+	 * You said the quick-jump “tabs” must be exactly:
+	 * gather, collect, planters, status, tools, settings
+	 */
 	static tabOnlySections(sections) {
-		// Your “6 tabs” must be: gather collect planters status tools settings
 		const allow = new Set([
 			"gather-tab",
 			"collect-tab",
@@ -46,22 +63,15 @@ class Pages {
 		const header = document.querySelector(".site-header");
 		const headerH = header ? header.getBoundingClientRect().height : 0;
 
-		// Slightly LOWER than before (not hidden under header)
-		const offset = Math.max(10, headerH + 6);
+		/**
+		 * You asked: “scroll a bit higher so I can actually see I got there”
+		 * That means we want the target heading slightly BELOW the header,
+		 * not tucked under it.
+		 */
+		const offset = Math.max(16, headerH + 18);
 
 		const y = window.scrollY + el.getBoundingClientRect().top - offset;
 		window.scrollTo({ top: y, behavior: "smooth" });
-	}
-
-	static renderDrawerPagesNav() {
-		const host = document.getElementById("drawerPagesNav");
-		if (!host) return;
-
-		host.innerHTML = `
-			<a class="drawer-link" href="#/guide" data-route="/guide">Guide</a>
-			<a class="drawer-link" href="#/troubleshooting" data-route="/troubleshooting">Troubleshooting</a>
-			<a class="drawer-link" href="#/changelog" data-route="/changelog">Changelog</a>
-		`.trim();
 	}
 
 	static renderDrawerGuideNav(sections) {
@@ -70,14 +80,34 @@ class Pages {
 
 		const tabs = Pages.tabOnlySections(sections);
 
-		host.innerHTML = tabs
-			.map(
-				(s) =>
-					`<a class="drawer-link" href="#/guide" data-scroll-id="${s.id}">${Pages.escapeHtml(
-						s.titleEn || s.id
-					)}</a>`
-			)
-			.join("");
+		// Drawer includes: navigation pages + the 6 guide tabs
+		host.innerHTML = `
+			<div class="drawer-block">
+				<div class="drawer-label">Pages</div>
+				<div class="drawer-links">
+					<a class="drawer-link" href="#/guide">Guide</a>
+					<a class="drawer-link" href="#/troubleshooting">Troubleshooting</a>
+					<a class="drawer-link" href="#/changelog">Changelog</a>
+				</div>
+			</div>
+
+			<div class="drawer-block" style="margin-top:14px;">
+				<div class="drawer-label">Guide Tabs</div>
+				<div class="drawer-links">
+					${tabs
+						.map(
+							(s) => `
+						<a class="drawer-link" href="#/guide" data-scroll-id="${Pages.escapeHtml(
+							s.id
+						)}">
+							${Pages.escapeHtml(s.titleEn || s.id)}
+						</a>
+					`
+						)
+						.join("")}
+				</div>
+			</div>
+		`;
 	}
 
 	static escapeHtml(text) {
@@ -90,7 +120,12 @@ class Pages {
 	}
 
 	static async fetchText(url) {
-		const res = await fetch(url, { cache: "no-cache" });
+		/**
+		 * Fixes GitHub Pages “base path” issues.
+		 * Using new URL() makes relative paths resolve correctly even on /repo-name/.
+		 */
+		const abs = new URL(url, window.location.href).toString();
+		const res = await fetch(abs, { cache: "no-cache" });
 		if (!res.ok) throw new Error(`Failed to fetch: ${url}`);
 		return await res.text();
 	}
@@ -124,11 +159,9 @@ class Pages {
 			return;
 		}
 
-		// Fill drawer content
-		Pages.renderDrawerPagesNav();
+		// Always refresh drawer contents so it works across all pages
 		Pages.renderDrawerGuideNav(sections);
 
-		// Render markdown in order
 		const rendered = [];
 		for (const s of sections) {
 			try {
@@ -137,7 +170,6 @@ class Pages {
 					? window.markdown.render(md)
 					: `<pre>${Pages.escapeHtml(md)}</pre>`;
 
-				// Wrap each section so Quick Jump can target it
 				rendered.push(`
 					<section class="guide-section" id="${Pages.escapeHtml(s.id)}">
 						${html}
@@ -156,21 +188,26 @@ class Pages {
 
 		guideRoot.innerHTML = rendered.join("");
 
-		// If we navigated here from another tab, scroll after render
 		const pending = Pages.consumePendingScrollId();
 		if (pending) {
+			// Wait a beat so layout settles
 			window.setTimeout(() => Pages.scrollToId(pending), 120);
 		}
 	}
 
 	// ---------- TROUBLESHOOTING ----------
 	static async renderTroubleshooting(container) {
-		const openIssuesUrl =
-			"https://github.com/RevolutionGuides/revolutionmacroguide/issues?q=is%3Aissue+is%3Aopen";
+		/**
+		 * You asked:
+		 * - “Open Issues” should NOT auto-fill anything (no broken label query)
+		 * - “Submit Fix” should open a new issue with BLANK title and ONLY the body prompt
+		 */
+		const baseRepo = `https://github.com/${Pages.GUIDE_REPO_OWNER}/${Pages.GUIDE_REPO_NAME}`;
+
+		const openIssuesUrl = `${baseRepo}/issues`; // no query, no prefill
 
 		const body = encodeURIComponent("Explain clearly how you solved the issue.");
-		const submitFixUrl =
-			`https://github.com/RevolutionGuides/revolutionmacroguide/issues/new?body=${body}`;
+		const submitFixUrl = `${baseRepo}/issues/new?title=&body=${body}`;
 
 		container.innerHTML = `
 			<section class="container page-shell page-enter">
@@ -209,9 +246,7 @@ class Pages {
 			</section>
 		`;
 
-		// Fill drawer content on this page too
-		Pages.renderDrawerPagesNav();
-
+		// Keep drawer populated on this page
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
@@ -221,7 +256,8 @@ class Pages {
 		const search = document.getElementById("fixSearch");
 		const filters = document.getElementById("fixFilters");
 
-		const issues = (await githubAPI.getTroubleshootingIssues("approved")) || [];
+		// Only approved fixes pulled from GitHub issues
+		const issues = (await githubAPI.getTroubleshootingIssues(Pages.LABELS.APPROVED)) || [];
 		if (!issues.length) {
 			list.innerHTML = `<div>No approved fixes found yet.</div>`;
 			return;
@@ -229,26 +265,34 @@ class Pages {
 
 		const state = { q: "", cat: "all" };
 
-		const getCat = (item) => {
-			const labels = (item.labels || []).map((l) =>
-				String(l.name || "").toLowerCase()
-			);
+		const normalizeLabels = (item) =>
+			(item.labels || []).map((l) => String(l.name || "").trim().toLowerCase());
+
+		const matchesCategory = (item) => {
 			if (state.cat === "all") return true;
+
+			const labels = normalizeLabels(item);
+
+			// Support either "mac" or "macos" depending on what you use
+			if (state.cat === "mac") {
+				return labels.includes(Pages.LABELS.MAC) || labels.includes(Pages.LABELS.MACOS);
+			}
+
 			return labels.includes(state.cat);
 		};
 
-		const getQ = (item) => {
+		const matchesQuery = (item) => {
 			if (!state.q) return true;
 			const hay = `${item.title || ""}\n${item.body || ""}`.toLowerCase();
 			return hay.includes(state.q.toLowerCase());
 		};
 
 		const render = () => {
-			const filtered = issues.filter((it) => getCat(it) && getQ(it));
+			const filtered = issues.filter((it) => matchesCategory(it) && matchesQuery(it));
 
 			list.innerHTML = filtered
 				.map((it) => {
-					const labels = (it.labels || []).map((l) => l.name);
+					const labels = normalizeLabels(it);
 					const labelHtml = labels
 						.map((n) => `<span class="pill">${Pages.escapeHtml(n)}</span>`)
 						.join("");
@@ -262,6 +306,7 @@ class Pages {
 								</div>
 								<div class="chev">▼</div>
 							</button>
+
 							<div class="acc-body" data-acc="body" hidden>
 								<div class="acc-inner">
 									${
@@ -270,7 +315,9 @@ class Pages {
 											: `<pre>${Pages.escapeHtml(it.body || "")}</pre>`
 									}
 									<div style="margin-top:12px;">
-										<a class="btn btn-ghost" href="${it.html_url}" target="_blank" rel="noopener noreferrer">Open on GitHub (#${it.number})</a>
+										<a class="btn btn-ghost" href="${it.html_url}" target="_blank" rel="noopener noreferrer">
+											Open on GitHub (#${it.number})
+										</a>
 									</div>
 								</div>
 							</div>
@@ -279,6 +326,7 @@ class Pages {
 				})
 				.join("");
 
+			// Accordion click behavior
 			list.querySelectorAll('[data-acc="toggle"]').forEach((btn) => {
 				btn.addEventListener("click", () => {
 					const root = btn.closest('[data-acc="root"]');
@@ -300,11 +348,9 @@ class Pages {
 			const btn = e.target.closest("button[data-cat]");
 			if (!btn) return;
 
-			filters.querySelectorAll(".chip").forEach((b) =>
-				b.classList.remove("active")
-			);
+			filters.querySelectorAll(".chip").forEach((b) => b.classList.remove("active"));
 			btn.classList.add("active");
-			state.cat = btn.getAttribute("data-cat") || "all";
+			state.cat = (btn.getAttribute("data-cat") || "all").toLowerCase();
 			render();
 		});
 
@@ -329,9 +375,7 @@ class Pages {
 			</section>
 		`;
 
-		// Fill drawer content on this page too
-		Pages.renderDrawerPagesNav();
-
+		// Keep drawer populated on this page
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
@@ -383,6 +427,7 @@ class Pages {
 		`;
 	}
 }
+
 
 
 
