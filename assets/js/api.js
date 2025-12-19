@@ -1,95 +1,67 @@
 /**
- * GitHub API Integration
- * Fetches releases and troubleshooting issues from GitHub
+ * GitHub API helper (no auth).
+ * Repo for site issues (approved fixes): RevolutionGuides/revolutionmacroguide
+ * Repo for releases (macro releases): nosyliam/revolution-macro
  */
 
 class GitHubAPI {
 	constructor() {
-		this.baseUrl = "https://api.github.com";
-		this.cache = {};
-		this.cacheTime = 5 * 60 * 1000; // 5 minutes
+		this.siteOwner = "RevolutionGuides";
+		this.siteRepo = "revolutionmacroguide";
+
+		this.macroOwner = "nosyliam";
+		this.macroRepo = "revolution-macro";
+
+		this.base = "https://api.github.com";
 	}
 
-	_buildUrl(path, params = {}) {
-		const url = new URL(`${this.baseUrl}${path}`);
-		Object.entries(params).forEach(([k, v]) => {
-			if (v === undefined || v === null || v === "") return;
-			url.searchParams.set(k, String(v));
+	async request(path) {
+		const res = await fetch(path, {
+			headers: {
+				Accept: "application/vnd.github+json",
+			},
+			cache: "no-store",
 		});
-		return url.toString();
-	}
-
-	async fetch(url, useCache = true) {
-		const cacheKey = url;
-		const cached = this.cache[cacheKey];
-
-		if (useCache && cached && Date.now() - cached.timestamp < this.cacheTime) {
-			return cached.data;
+		if (!res.ok) {
+			const text = await res.text().catch(() => "");
+			throw new Error(`GitHub API error ${res.status}: ${text || res.statusText}`);
 		}
+		return res.json();
+	}
 
+	/**
+	 * Approved troubleshooting issues in the SITE repo.
+	 * You should label fix-issues with: approved + (windows|mac|macos|macro|pro)
+	 */
+	async getTroubleshootingIssues(requiredLabel = "approved") {
+		// Pull open issues only; you can change per_page if you have lots.
+		const url =
+			`${this.base}/repos/${this.siteOwner}/${this.siteRepo}/issues` +
+			`?state=open&per_page=100&labels=${encodeURIComponent(requiredLabel)}`;
+		return this.request(url);
+	}
+
+	/**
+	 * Releases for macro repo (changelog page).
+	 */
+	async getReleases() {
+		const url =
+			`${this.base}/repos/${this.macroOwner}/${this.macroRepo}/releases` +
+			`?per_page=20`;
+		return this.request(url);
+	}
+
+	formatDate(iso) {
 		try {
-			const response = await fetch(url, {
-				headers: {
-					Accept: "application/vnd.github+json",
-				},
-			});
-
-			if (!response.ok) throw new Error(`API Error: ${response.status}`);
-			const data = await response.json();
-
-			if (useCache) {
-				this.cache[cacheKey] = { data, timestamp: Date.now() };
-			}
-
-			return data;
-		} catch (error) {
-			console.error("GitHub API Error:", error);
-			return null;
-		}
-	}
-
-	getReleasesUrl(owner = "nosyliam", repo = "revolution-macro") {
-		return this._buildUrl(`/repos/${owner}/${repo}/releases`, {
-			per_page: 10,
-		});
-	}
-
-	getIssuesUrl(owner, repo, labelsCsv = "approved") {
-		// labelsCsv example: "approved,windows"
-		return this._buildUrl(`/repos/${owner}/${repo}/issues`, {
-			labels: labelsCsv,
-			state: "open",
-			per_page: 100,
-		});
-	}
-
-	async getReleases(owner = "nosyliam", repo = "revolution-macro") {
-		return await this.fetch(this.getReleasesUrl(owner, repo));
-	}
-
-	async getTroubleshootingIssues({
-		owner = "RevolutionGuides",
-		repo = "revolutionmacroguide",
-		labels = ["approved"], // IMPORTANT: your repo uses approved/windows/macos/macro/pro
-	} = {}) {
-		const labelsCsv = Array.isArray(labels) ? labels.join(",") : String(labels || "");
-		const url = this.getIssuesUrl(owner, repo, labelsCsv);
-		return await this.fetch(url);
-	}
-
-	formatDate(dateString) {
-		try {
-			return new Date(dateString).toLocaleDateString("en-US", {
+			return new Date(iso).toLocaleDateString(undefined, {
 				year: "numeric",
 				month: "short",
 				day: "numeric",
 			});
 		} catch {
-			return dateString || "";
+			return "";
 		}
 	}
 }
 
 const githubAPI = new GitHubAPI();
-
-
