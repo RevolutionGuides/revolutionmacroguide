@@ -19,7 +19,7 @@ class Pages {
 	}
 
 	static tabOnlySections(sections) {
-		// You said your “6 tabs” must be: gather collect planters status tools settings
+		// Your “6 tabs” must be: gather collect planters status tools settings
 		const allow = new Set([
 			"gather-tab",
 			"collect-tab",
@@ -46,11 +46,22 @@ class Pages {
 		const header = document.querySelector(".site-header");
 		const headerH = header ? header.getBoundingClientRect().height : 0;
 
-		// User request: quick jump was scrolling “too high”, so scroll a tiny bit LOWER
+		// Slightly LOWER than before (not hidden under header)
 		const offset = Math.max(10, headerH + 6);
 
 		const y = window.scrollY + el.getBoundingClientRect().top - offset;
 		window.scrollTo({ top: y, behavior: "smooth" });
+	}
+
+	static renderDrawerPagesNav() {
+		const host = document.getElementById("drawerPagesNav");
+		if (!host) return;
+
+		host.innerHTML = `
+			<a class="drawer-link" href="#/guide" data-route="/guide">Guide</a>
+			<a class="drawer-link" href="#/troubleshooting" data-route="/troubleshooting">Troubleshooting</a>
+			<a class="drawer-link" href="#/changelog" data-route="/changelog">Changelog</a>
+		`.trim();
 	}
 
 	static renderDrawerGuideNav(sections) {
@@ -113,7 +124,8 @@ class Pages {
 			return;
 		}
 
-		// Build drawer nav every time (so it works across tabs)
+		// Fill drawer content
+		Pages.renderDrawerPagesNav();
 		Pages.renderDrawerGuideNav(sections);
 
 		// Render markdown in order
@@ -153,12 +165,9 @@ class Pages {
 
 	// ---------- TROUBLESHOOTING ----------
 	static async renderTroubleshooting(container) {
-		// Working links:
-		// - Open Issues: show open issues in your repo, filtered to approved (optional)
 		const openIssuesUrl =
 			"https://github.com/RevolutionGuides/revolutionmacroguide/issues?q=is%3Aissue+is%3Aopen";
 
-		// Submit Fix: blank title, body only with your prompt
 		const body = encodeURIComponent("Explain clearly how you solved the issue.");
 		const submitFixUrl =
 			`https://github.com/RevolutionGuides/revolutionmacroguide/issues/new?body=${body}`;
@@ -200,7 +209,9 @@ class Pages {
 			</section>
 		`;
 
-		// Ensure drawer has the 6 tabs available even on troubleshooting page
+		// Fill drawer content on this page too
+		Pages.renderDrawerPagesNav();
+
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
@@ -219,15 +230,16 @@ class Pages {
 		const state = { q: "", cat: "all" };
 
 		const getCat = (item) => {
-			const labels = (item.labels || []).map((l) => String(l.name || "").toLowerCase());
+			const labels = (item.labels || []).map((l) =>
+				String(l.name || "").toLowerCase()
+			);
 			if (state.cat === "all") return true;
 			return labels.includes(state.cat);
 		};
 
 		const getQ = (item) => {
 			if (!state.q) return true;
-			const hay =
-				`${item.title || ""}\n${item.body || ""}`.toLowerCase();
+			const hay = `${item.title || ""}\n${item.body || ""}`.toLowerCase();
 			return hay.includes(state.q.toLowerCase());
 		};
 
@@ -235,13 +247,12 @@ class Pages {
 			const filtered = issues.filter((it) => getCat(it) && getQ(it));
 
 			list.innerHTML = filtered
-				.map((it, idx) => {
+				.map((it) => {
 					const labels = (it.labels || []).map((l) => l.name);
 					const labelHtml = labels
 						.map((n) => `<span class="pill">${Pages.escapeHtml(n)}</span>`)
 						.join("");
 
-					// clickable accordion
 					return `
 						<div class="acc" data-acc="root">
 							<button class="acc-head" type="button" aria-expanded="false" data-acc="toggle">
@@ -253,7 +264,11 @@ class Pages {
 							</button>
 							<div class="acc-body" data-acc="body" hidden>
 								<div class="acc-inner">
-									${window.markdown?.render ? window.markdown.render(it.body || "") : `<pre>${Pages.escapeHtml(it.body || "")}</pre>`}
+									${
+										window.markdown?.render
+											? window.markdown.render(it.body || "")
+											: `<pre>${Pages.escapeHtml(it.body || "")}</pre>`
+									}
 									<div style="margin-top:12px;">
 										<a class="btn btn-ghost" href="${it.html_url}" target="_blank" rel="noopener noreferrer">Open on GitHub (#${it.number})</a>
 									</div>
@@ -264,7 +279,6 @@ class Pages {
 				})
 				.join("");
 
-			// bind accordion behavior
 			list.querySelectorAll('[data-acc="toggle"]').forEach((btn) => {
 				btn.addEventListener("click", () => {
 					const root = btn.closest('[data-acc="root"]');
@@ -286,7 +300,9 @@ class Pages {
 			const btn = e.target.closest("button[data-cat]");
 			if (!btn) return;
 
-			filters.querySelectorAll(".chip").forEach((b) => b.classList.remove("active"));
+			filters.querySelectorAll(".chip").forEach((b) =>
+				b.classList.remove("active")
+			);
 			btn.classList.add("active");
 			state.cat = btn.getAttribute("data-cat") || "all";
 			render();
@@ -313,7 +329,9 @@ class Pages {
 			</section>
 		`;
 
-		// Ensure drawer has the 6 tabs available even on changelog page
+		// Fill drawer content on this page too
+		Pages.renderDrawerPagesNav();
+
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
@@ -332,7 +350,9 @@ class Pages {
 				const name = Pages.escapeHtml(r.name || r.tag_name || "Release");
 				const when = githubAPI.formatDate(r.published_at || r.created_at);
 				const body = r.body || "";
-				const html = window.markdown?.render ? window.markdown.render(body) : `<pre>${Pages.escapeHtml(body)}</pre>`;
+				const html = window.markdown?.render
+					? window.markdown.render(body)
+					: `<pre>${Pages.escapeHtml(body)}</pre>`;
 
 				return `
 					<div class="acc">
@@ -363,6 +383,7 @@ class Pages {
 		`;
 	}
 }
+
 
 
 
