@@ -66,7 +66,6 @@ class App {
 			}, 200);
 		};
 
-		// Toggle
 		toggleBtn.addEventListener("click", () => {
 			const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
 			if (expanded) close();
@@ -80,7 +79,6 @@ class App {
 			if (e.key === "Escape") close();
 		});
 
-		// optional “Top” button inside drawer
 		if (topBtn) {
 			topBtn.addEventListener("click", () => {
 				close();
@@ -88,12 +86,19 @@ class App {
 			});
 		}
 
-		/**
-		 * IMPORTANT:
-		 * - Drawer link behavior:
-		 *   - Works from any page.
-		 *   - If you click a guide tab from Troubleshooting/Changelog, it routes to Guide then scrolls.
-		 */
+		// Close drawer when clicking page links in it
+		document.addEventListener("click", (e) => {
+			const routeLink = e.target?.closest?.("[data-route]");
+			if (!routeLink) return;
+
+			const route = routeLink.getAttribute("data-route");
+			if (!route) return;
+
+			// allow hash navigation, just close drawer
+			close();
+		});
+
+		// Quick Jump links:
 		document.addEventListener("click", (e) => {
 			const link = e.target?.closest?.("[data-scroll-id]");
 			if (!link) return;
@@ -113,11 +118,6 @@ class App {
 
 			Pages.scrollToId(id);
 		});
-
-		// Close drawer whenever route changes (cleaner UX on mobile)
-		window.addEventListener("hashchange", () => {
-			if (toggleBtn.getAttribute("aria-expanded") === "true") close();
-		});
 	}
 }
 
@@ -128,3 +128,4 @@ if (document.readyState === "loading") {
 } else {
 	app.init();
 }
+
