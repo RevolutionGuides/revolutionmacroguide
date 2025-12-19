@@ -49,7 +49,6 @@ class App {
 			overlay.hidden = false;
 			drawer.hidden = false;
 
-			// allow CSS transition
 			requestAnimationFrame(() => drawer.classList.add("open"));
 
 			toggleBtn.setAttribute("aria-expanded", "true");
@@ -61,13 +60,13 @@ class App {
 			toggleBtn.setAttribute("aria-expanded", "false");
 			document.body.style.overflow = "";
 
-			// wait for transition then hide
 			window.setTimeout(() => {
 				drawer.hidden = true;
 				overlay.hidden = true;
 			}, 200);
 		};
 
+		// Toggle
 		toggleBtn.addEventListener("click", () => {
 			const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
 			if (expanded) close();
@@ -81,6 +80,7 @@ class App {
 			if (e.key === "Escape") close();
 		});
 
+		// optional “Top” button inside drawer
 		if (topBtn) {
 			topBtn.addEventListener("click", () => {
 				close();
@@ -88,9 +88,12 @@ class App {
 			});
 		}
 
-		// Drawer link behavior:
-		// - Always works from any tab.
-		// - If you click a guide tab from Troubleshooting/Changelog, it routes to Guide then scrolls.
+		/**
+		 * IMPORTANT:
+		 * - Drawer link behavior:
+		 *   - Works from any page.
+		 *   - If you click a guide tab from Troubleshooting/Changelog, it routes to Guide then scrolls.
+		 */
 		document.addEventListener("click", (e) => {
 			const link = e.target?.closest?.("[data-scroll-id]");
 			if (!link) return;
@@ -101,7 +104,6 @@ class App {
 
 			close();
 
-			// If we're not on guide, store pending scroll then route
 			const path = router.getCurrentPath();
 			if (path !== "/guide") {
 				localStorage.setItem("revo_pending_scroll", id);
@@ -109,8 +111,12 @@ class App {
 				return;
 			}
 
-			// On guide already; scroll now
 			Pages.scrollToId(id);
+		});
+
+		// Close drawer whenever route changes (cleaner UX on mobile)
+		window.addEventListener("hashchange", () => {
+			if (toggleBtn.getAttribute("aria-expanded") === "true") close();
 		});
 	}
 }
@@ -122,8 +128,3 @@ if (document.readyState === "loading") {
 } else {
 	app.init();
 }
-
-
-
-
-
