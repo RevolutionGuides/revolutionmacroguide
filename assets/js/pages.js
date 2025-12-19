@@ -152,7 +152,7 @@ class Pages {
 
 		// Blank title, only your instruction in body.
 		const submitFixUrl =
-			"https://github.com/RevolutionGuides/revolutionmacroguide/issues/new" +
+			"https://github.com/RevolutionGuides/revolutionmacroguide/issues/new?template=troubleshooting.yml" +
 			`?body=${encodeURIComponent("Explain clearly how you solved the issue.")}`;
 
 		container.innerHTML = `
