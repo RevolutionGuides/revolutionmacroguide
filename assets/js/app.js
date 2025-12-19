@@ -1,98 +1,128 @@
-/* assets/js/app.js
- * App bootstrap: router init, drawer open/close, back-to-top, and drawer nav preload.
+/**
+ * Main Application
+ * Orchestrates all components + drawer behavior
  */
 
-(function () {
-  function qs(sel) { return document.querySelector(sel); }
+class App {
+	constructor() {
+		this.initialized = false;
+	}
 
-  const drawer = qs("#drawer");
-  const overlay = qs("#drawerOverlay");
-  const toggle = qs("#drawerToggle");
-  const closeBtn = qs("#drawerClose");
-  const topBtn = qs("#drawerTopBtn");
-  const backToTop = qs("#backToTopBtn");
+	async init() {
+		if (this.initialized) return;
 
-  function setDrawerOpen(open) {
-    if (!drawer || !overlay || !toggle) return;
+		try {
+			router.init();
+			this.setupBackToTop();
+			this.setupDrawer();
+			this.initialized = true;
+		} catch (error) {
+			console.error("App initialization error:", error);
+		}
+	}
 
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+	setupBackToTop() {
+		const backToTopBtn = document.getElementById("backToTopBtn");
+		if (!backToTopBtn) return;
 
-    if (open) {
-      drawer.hidden = false;
-      overlay.hidden = false;
-      // next frame for transitions
-      requestAnimationFrame(() => {
-        drawer.classList.add("open");
-        overlay.classList.add("open");
-      });
-    } else {
-      drawer.classList.remove("open");
-      overlay.classList.remove("open");
-      // wait for transition
-      window.setTimeout(() => {
-        drawer.hidden = true;
-        overlay.hidden = true;
-      }, 200);
-    }
-  }
+		const toggle = () => {
+			backToTopBtn.classList.toggle("visible", window.scrollY > 320);
+		};
 
-  function closeDrawer() { setDrawerOpen(false); }
-  function openDrawer() { setDrawerOpen(true); }
+		window.addEventListener("scroll", toggle);
+		backToTopBtn.addEventListener("click", () => {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		});
+		toggle();
+	}
 
-  // Drawer event wiring
-  if (toggle) toggle.addEventListener("click", () => openDrawer());
-  if (closeBtn) closeBtn.addEventListener("click", () => closeDrawer());
-  if (overlay) overlay.addEventListener("click", () => closeDrawer());
+	setupDrawer() {
+		const toggleBtn = document.getElementById("drawerToggle");
+		const drawer = document.getElementById("drawer");
+		const overlay = document.getElementById("drawerOverlay");
+		const closeBtn = document.getElementById("drawerClose");
+		const topBtn = document.getElementById("drawerTopBtn");
 
-  // Allow Pages to close drawer via event
-  document.addEventListener("revo:drawer-close", () => closeDrawer());
+		if (!toggleBtn || !drawer || !overlay || !closeBtn) return;
 
-  // ESC closes drawer
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeDrawer();
-  });
+		const open = () => {
+			overlay.hidden = false;
+			drawer.hidden = false;
 
-  // Drawer "Top" button
-  if (topBtn) {
-    topBtn.addEventListener("click", () => {
-      closeDrawer();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
+			// allow CSS transition
+			requestAnimationFrame(() => drawer.classList.add("open"));
 
-  // Back to top floating button
-  function syncBackToTop() {
-    if (!backToTop) return;
-    const y = window.scrollY || document.documentElement.scrollTop || 0;
-    backToTop.classList.toggle("show", y > 420);
-  }
-  window.addEventListener("scroll", syncBackToTop, { passive: true });
-  syncBackToTop();
+			toggleBtn.setAttribute("aria-expanded", "true");
+			document.body.style.overflow = "hidden";
+		};
 
-  if (backToTop) {
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
+		const close = () => {
+			drawer.classList.remove("open");
+			toggleBtn.setAttribute("aria-expanded", "false");
+			document.body.style.overflow = "";
 
-  // Preload guide-sections.json so drawer has the 6 tabs even before visiting Guide
-  (async () => {
-    try {
-      const sections = await Pages.getGuideSections();
-      Pages.renderDrawerGuideNav(sections);
-    } catch (e) {
-      // If guide-sections.json fails, drawer stays empty; Guide page will show the error card.
-      console.error(e);
-    }
-  })();
+			// wait for transition then hide
+			window.setTimeout(() => {
+				drawer.hidden = true;
+				overlay.hidden = true;
+			}, 200);
+		};
 
-  // Start router (your router.js already creates `router`)
-  if (window.router && typeof window.router.init === "function") {
-    window.router.init();
-  } else if (typeof router !== "undefined" && router?.init) {
-    router.init();
-  }
-})();
+		toggleBtn.addEventListener("click", () => {
+			const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
+			if (expanded) close();
+			else open();
+		});
+
+		closeBtn.addEventListener("click", close);
+		overlay.addEventListener("click", close);
+
+		window.addEventListener("keydown", (e) => {
+			if (e.key === "Escape") close();
+		});
+
+		if (topBtn) {
+			topBtn.addEventListener("click", () => {
+				close();
+				window.scrollTo({ top: 0, behavior: "smooth" });
+			});
+		}
+
+		// Drawer link behavior:
+		// - Always works from any tab.
+		// - If you click a guide tab from Troubleshooting/Changelog, it routes to Guide then scrolls.
+		document.addEventListener("click", (e) => {
+			const link = e.target?.closest?.("[data-scroll-id]");
+			if (!link) return;
+
+			e.preventDefault();
+			const id = link.getAttribute("data-scroll-id");
+			if (!id) return;
+
+			close();
+
+			// If we're not on guide, store pending scroll then route
+			const path = router.getCurrentPath();
+			if (path !== "/guide") {
+				localStorage.setItem("revo_pending_scroll", id);
+				window.location.hash = "#/guide";
+				return;
+			}
+
+			// On guide already; scroll now
+			Pages.scrollToId(id);
+		});
+	}
+}
+
+const app = new App();
+
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", () => app.init());
+} else {
+	app.init();
+}
+
 
 
 
