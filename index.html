@@ -51,13 +51,14 @@
 			<span class="burger-lines" aria-hidden="true"></span>
 		</button>
 
-		<header class="site-header">
+		<header class="site-header" id="siteHeader">
 			<div class="container header-grid">
 				<a href="#/guide" class="brand" aria-label="Revolution Macro Guide home">
 					<span class="brand-title-single">Revolution Macro Guide</span>
 				</a>
 
-				<nav class="nav-links" aria-label="Primary">
+				<!-- Desktop nav only (mobile will use hamburger drawer) -->
+				<nav class="nav-links" aria-label="Primary" id="desktopNav">
 					<a href="#/guide" class="nav-link" id="navGuide">Guide</a>
 					<a href="#/troubleshooting" class="nav-link" id="navTrouble"
 						>Troubleshooting</a
@@ -65,7 +66,7 @@
 					<a href="#/changelog" class="nav-link" id="navChangelog">Changelog</a>
 				</nav>
 
-				<div class="header-actions">
+				<div class="header-actions" id="desktopActions">
 					<a
 						href="https://github.com/nosyliam/revolution-macro"
 						target="_blank"
@@ -91,30 +92,55 @@
 		<aside class="drawer" id="drawer" aria-label="Menu" hidden>
 			<div class="drawer-head">
 				<div class="drawer-title">Menu</div>
-				<button
-					class="icon-btn"
-					type="button"
-					aria-label="Close"
-					id="drawerClose"
-				>
+				<button class="icon-btn" type="button" aria-label="Close" id="drawerClose">
 					<span class="icon-x" aria-hidden="true"></span>
 				</button>
 			</div>
 
 			<div class="drawer-body">
-				<!-- Mobile navigation: move Troubleshooting/Changelog into the drawer -->
 				<div class="drawer-section">
 					<div class="drawer-label">Pages</div>
-					<div class="drawer-links" id="drawerPagesNav">
+					<div class="drawer-links">
+						<a class="drawer-link" href="#/guide" data-route="/guide">Guide</a>
+						<a
+							class="drawer-link"
+							href="#/troubleshooting"
+							data-route="/troubleshooting"
+							>Troubleshooting</a
+						>
+						<a
+							class="drawer-link"
+							href="#/changelog"
+							data-route="/changelog"
+							>Changelog</a
+						>
+					</div>
+				</div>
+
+				<div class="drawer-section">
+					<div class="drawer-label">Quick Jump (Guide)</div>
+					<div id="drawerGuideNav" class="drawer-links">
 						<!-- Filled by JS -->
 					</div>
 				</div>
 
-				<!-- Guide quick jump (your 6 tabs and any subsections) -->
-				<div class="drawer-section" style="margin-top: 14px">
-					<div class="drawer-label">Guide Tabs</div>
-					<div id="drawerGuideNav" class="drawer-links">
-						<!-- Filled by JS -->
+				<div class="drawer-section">
+					<div class="drawer-label">Links</div>
+					<div class="drawer-links">
+						<a
+							class="drawer-link"
+							href="https://github.com/nosyliam/revolution-macro"
+							target="_blank"
+							rel="noopener noreferrer"
+							>Macro GitHub</a
+						>
+						<a
+							class="drawer-link"
+							href="https://github.com/nosyliam/revolution-macro/releases/latest"
+							target="_blank"
+							rel="noopener noreferrer"
+							>Download</a
+						>
 					</div>
 				</div>
 
@@ -148,6 +174,7 @@
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>
+
 
 
 
