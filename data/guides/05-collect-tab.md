@@ -1,75 +1,81 @@
 # Collect Tab
 
-The Collect Tab manages honey conversion, collection, and related automation.
+## Dispensers
 
-## General Conversion Settings
+- Recommended to enable:
+  - **Wealth**
+  - **Glue**
+  - **Blueberry / Strawberry**
 
-| Setting                          | Purpose                                                     |
-| -------------------------------- | ----------------------------------------------------------- |
-| **Convert At**                   | Honey percentage threshold for conversion (default: 95%)    |
-| **Convert**                      | Toggle honey conversion on/off                              |
-| **Convert On Full**              | Forces conversion when backpack is full, ignoring threshold |
-| **Convert With 0 Honey**         | Triggers conversion when you have 0 honey (not recommended) |
-| **Convert With 0 Honey Timeout** | Seconds before forced 0-honey conversion                    |
-| **Reset After Convert**          | Automatically resets position after conversion completes    |
+These dispensers provide consistent buffs and materials during macro runs.
 
-## Conversion Method
+---
 
-Choose ONE conversion method for your hive setup:
+## Bug Run
 
-| Option                  | Use When                                                |
-| ----------------------- | ------------------------------------------------------- |
-| **Use Converter**       | You have a standard converter in your hive              |
-| **Use Micro Converter** | You're using a micro converter (faster, more efficient) |
-| **Use Balloon**         | You're using a balloon transport system                 |
+- If you have a **Gifted Vicious Bee**:
+  - Set **Monster Respawn Percent** to **15%**
+  - Check your amulets (especially **Stick Bug**) to verify this is the **only** Monster Respawn Percent buff active
+- All remaining settings are **up to the user**
 
-## Snowflakes Collection
+---
 
-- **Gather Snowflakes**: Automatically collects snowflakes during gathering
-- Useful during winter events
-- Can be toggled on/off independently
+## Quests  
+*(Bucko / Riley coming soon)*
 
-## Puff Automation
+### Polar Bear
 
-Configure automatic puff collection if you use planters:
+- Enable **Polar Bear** quests if **Polar Power < 1000**
 
-| Setting                   | Purpose                                           |
-| ------------------------- | ------------------------------------------------- |
-| **Enabled**               | Toggles puff collection                           |
-| **Puff Planter Type**     | Type of planter used for puffs                    |
-| **Puff Planter Field**    | Which field your puff planter is placed in        |
-| **Puff Planter Interval** | How often to check and collect puffs (in seconds) |
+### Quest Options
 
-## Optimization Tips
+| Setting | Purpose |
+| --- | --- |
+| **Gather Interrupt** | If enabled, the macro will stop gathering as soon as it can complete or continue a quest |
+| **Priority** | Controls the priority of this quest relative to other quests |
 
-### Conversion Timing
+---
 
-- **95% threshold** works well for most hive types
-- Lower threshold = more frequent conversions = less downtime
-- Higher threshold = fewer conversions = risk of overflow
+## Buffs
 
-### Choosing Conversion Method
+### Sticker Stack
 
-1. **Standard Converter**: Most common, standard speed
-2. **Micro Converter**: Faster if you have room for it
-3. **Balloon**: Experimental, may require tweaking
+| Setting | Purpose |
+| --- | --- |
+| **Enabled** | Enables Sticker Stack |
+| **Gather Interrupt** | Stacks a new sticker as soon as possible |
+| **Use Tickets** | Determines whether the macro uses Tickets toward the Sticker Stack |
+| **Use Stickers** | Determines whether the macro uses stickers or not |
 
-### Puff Collection
+---
 
-- Enable if you have spare planter space
-- Set interval based on planter respawn rate
-- Test with small interval first, then optimize
+### Mondo Chick
 
-## Common Issues
+| Setting | Purpose |
+| --- | --- |
+| **Enabled** | Allows the macro to fight Mondo Chick |
+| **Gather Interrupt** | Whether the macro should stop gathering or finish gathering before fighting Mondo |
+| **Kill** | Whether the macro kills and loots Mondo Chick |
+| **AI Mondo Battle** | Uses AI for the battle. Faster kills, but less consistent. Verify you are **level 14+** before enabling |
+| **Buff Time** | How long the macro attacks Mondo before returning to gather. **Recommended: 60 seconds** |
 
-### "Conversion fails to trigger"
+---
 
-- Verify you selected a conversion method
-- Check your converter/balloon is accessible
-- Ensure honey percentage is above threshold
+### HQ Boosters
 
-### "Puff collection not working"
+- Enable your **designated HQ color**
+- Recommended to gather in the **boosted field**
+- **Gather in Fields**: Fully customizable to the user
 
-- Confirm puff planter is in the correct field
-- Check that collection interval isn't too short
-- Verify planter type is correctly set
+---
+
+## Bosses
+
+- **Work in Progress**
+
+---
+
+## Blender
+
+- **Work in Progress**
+
