@@ -125,13 +125,12 @@ class Pages {
 				: md;
 
 			// Wrap each section with a real anchor ID (so quickjump works)
-			const title = Pages.escapeHtml(s.titleEn || s.title || "");
-			htmlParts.push(`
-				<section class="guide-section" id="${Pages.escapeHtml(s.id)}">
-					${title ? `<h2>${title}</h2>` : ""}
-					${rendered}
-				</section>
-			`);
+htmlParts.push(`
+	<section class="guide-section" id="${Pages.escapeHtml(s.id)}">
+		${rendered}
+	</section>
+`);
+
 		}
 
 		root.innerHTML = htmlParts.join("\n");
