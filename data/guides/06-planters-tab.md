@@ -1,48 +1,65 @@
 # Planters Tab
 
-The Planters Tab automates planting and harvesting cycles.
+## Recommendations
+
+- **Recommended to use Auto Planters**
+- In the **top-left**, set planter duration to **12 hours**
+- **Clearing Schedule**:
+  - Clears all planters from the macro UI
+  - When clearing, **collect every planter beforehand**
+- **Refreshing Planters**:
+  - Refreshes the internal timer for when planters are collected
+
+---
+
+## Settings  
+*(Nectar Jar coming soon!)*
+
+| Setting | Purpose |
+| --- | --- |
+| **Disable Planters** | Completely disables all planter-related behavior |
+| **Gather Loot** | Gathers loot dropped by planters |
+| **Pathfind when Planting** | Macro finds the fastest route to place planters from its current location. **Recommended to keep disabled**, as it can become lost |
+| **Reset when Harvesting** | Macro resets and uses the red cannon to harvest planters. Not enabled by default. **Recommended to enable** |
+| **Timeline Mode** | Determines whether the macro uses a clock or a timer to track planter growth |
+
+---
 
 ## Auto Planters
 
-Configure automatic planting for improved efficiency:
+### Settings
 
-- Select planter type and location
-- Set harvest intervals
-- Configure replanting behavior
+| Setting | Purpose |
+| --- | --- |
+| **Enabled** | Enables Auto Planters |
+| **Degradation Multiplier** | Increases how quickly fields degrade when placing planters consecutively. Higher values encourage the algorithm to choose different fields |
+| **Build Nectars** | Controls how the algorithm builds and maintains nectars. The macro prioritizes building the highest-priority nectars below target and maintaining the lowest nectars above target. When building, the macro focuses on a single nectar until its target is reached |
+| **Harvest Automatically / Harvest Fully Grown** | Controls automatic harvesting behavior. **Recommended to set both minimum and maximum hours to 3** |
 
-## Planter Management
+---
 
-### Types of Planters
+## Nectar Goals
 
-- **Sunflower Planter**: Basic planting
-- **Honey Planter**: Extended growth
-- **Pumpkin Planter**: Specialty planting
-- **Comforter Planter**: Premium efficiency
+- Fully customizable
+- Should be adjusted based on:
+  - Hive color
+  - How long you macro per day
 
-### Setting Up Auto-Planters
+---
 
-1. Select desired planter type
-2. Assign to a specific field
-3. Configure harvest interval (seconds between collections)
-4. Enable/disable based on availability
+## Fields
 
-## Advanced Configuration
+- Fully customizable
+- Should be adjusted based on:
+  - Hive color
+  - Field preferences
+  - Farming goals
 
-### Multiple Planters
+---
 
-- You can set up multiple planters across different fields
-- Each planter operates independently
-- Macro will cycle through all configured planters
+## Planters
 
-### Harvest Timing
-
-- Set intervals based on planter growth time
-- Shorter intervals = more frequent checks
-- Longer intervals = less CPU usage
-
-## Tips
-
-- Start with basic planters before adding multiple
-- Use pre-configured planter sets from Discord
-- Monitor planter status in the Status Tab
-- Adjust intervals based on macro performance
+- Fully customizable
+- Configure based on:
+  - Available planters
+  - Personal farming needs
