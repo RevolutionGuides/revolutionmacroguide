@@ -25,7 +25,6 @@ class Pages {
 	static getHeaderOffsetPx() {
 		const header = document.getElementById("siteHeader");
 		const h = header ? header.getBoundingClientRect().height : 72;
-		// You asked: quickjump scrolls too high -> make offset smaller (lands lower).
 		return Math.round(h + 6);
 	}
 
@@ -50,6 +49,7 @@ class Pages {
 			if (l === "macro") cats.add("macro");
 			if (l === "pro" || l === "premium") cats.add("pro");
 		}
+
 		// Default bucket if nothing matched
 		if (cats.size === 0) cats.add("macro");
 		return cats;
@@ -113,10 +113,8 @@ class Pages {
 		const root = container.querySelector("#guideRoot");
 		const sections = await Pages.loadGuideSections();
 
-		// Ensure drawer quickjump exists on guide too
 		Pages.renderDrawerGuideNav(sections);
 
-		// Load and render all markdown sections into one long page with anchor IDs
 		const htmlParts = [];
 		for (const s of sections) {
 			const md = await Pages.fetchText(s.file);
@@ -125,10 +123,9 @@ class Pages {
 				: md;
 
 			// Wrap each section with a real anchor ID (so quickjump works)
-			const title = Pages.escapeHtml(s.titleEn || s.title || "");
 			htmlParts.push(`
 				<section class="guide-section" id="${Pages.escapeHtml(s.id)}">
-					${title ? `<h2>${title}</h2>` : ""}
+					
 					${rendered}
 				</section>
 			`);
@@ -136,24 +133,33 @@ class Pages {
 
 		root.innerHTML = htmlParts.join("\n");
 
-		// If we came from troubleshooting -> guide quickjump
+		// If drawer nav / quickjump clicked before guide loaded, honor it
 		const pending = localStorage.getItem("revo_pending_scroll");
 		if (pending) {
 			localStorage.removeItem("revo_pending_scroll");
-			window.setTimeout(() => Pages.scrollToId(pending), 120);
+			setTimeout(() => Pages.scrollToId(pending), 150);
+		}
+
+		// Drawer guide quickjump
+		const drawer = document.getElementById("drawerGuideNav");
+		if (drawer) {
+			drawer.querySelectorAll("[data-scroll-id]").forEach((btn) => {
+				btn.addEventListener("click", () => {
+					const id = btn.getAttribute("data-scroll-id");
+					if (!id) return;
+					if (window.innerWidth <= 820) {
+						document.body.classList.remove("drawer-open");
+					}
+					Pages.scrollToId(id);
+				});
+			});
 		}
 	}
 
 	// ---------- TROUBLESHOOTING ----------
 	static async renderTroubleshooting(container) {
-		// DO NOT prefill garbage searches. Keep it clean.
-		const openIssuesUrl =
-			"https://github.com/RevolutionGuides/revolutionmacroguide/issues";
-
-		// Blank title, only your instruction in body.
-		const submitFixUrl =
-			"https://github.com/RevolutionGuides/revolutionmacroguide/issues/new" +
-			`?body=${encodeURIComponent("Explain clearly how you solved the issue.")}`;
+		const openIssuesUrl = "https://github.com/RevolutionGuides/revolutionmacroguide/issues";
+		const submitFixUrl = "https://github.com/RevolutionGuides/revolutionmacroguide/issues/new";
 
 		container.innerHTML = `
 			<section class="container page-shell page-enter">
@@ -171,16 +177,16 @@ class Pages {
 				<div class="surface">
 					<div class="toolbar">
 						<div class="search">
-							<span class="search-icon" aria-hidden="true">🔎</span>
-							<input id="fixSearch" type="text" placeholder="Search fixes..." autocomplete="off" />
+							<span class="search-icon">🔎</span>
+							<input id="fixSearch" type="text" placeholder="Search fixes..." />
 						</div>
 
 						<div class="filter-chips" id="fixFilters">
-							<button class="chip active" data-cat="all" type="button">All</button>
-							<button class="chip" data-cat="windows" type="button">Windows</button>
-							<button class="chip" data-cat="mac" type="button">macOS</button>
-							<button class="chip" data-cat="macro" type="button">Macro</button>
-							<button class="chip" data-cat="pro" type="button">Pro</button>
+							<button class="chip active" data-cat="all">All</button>
+							<button class="chip" data-cat="windows">Windows</button>
+							<button class="chip" data-cat="mac">macOS</button>
+							<button class="chip" data-cat="macro">Macro</button>
+							<button class="chip" data-cat="pro">Pro</button>
 						</div>
 					</div>
 
@@ -191,129 +197,102 @@ class Pages {
 			</section>
 		`;
 
-		// Always fill the 6-tab quickjump in drawer, even on this page
+		// hydrate drawer nav guide quickjump (reuse guide sections)
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
-		} catch {}
 
-		const list = container.querySelector("#fixList");
-		const search = container.querySelector("#fixSearch");
-		const filters = container.querySelector("#fixFilters");
+			const drawer = document.getElementById("drawerGuideNav");
+			if (drawer) {
+				drawer.querySelectorAll("[data-scroll-id]").forEach((btn) => {
+					btn.addEventListener("click", () => {
+						const id = btn.getAttribute("data-scroll-id");
+						if (!id) return;
+						localStorage.setItem("revo_pending_scroll", id);
+						location.hash = "#/guide";
+					});
+				});
+			}
+		} catch (e) {}
 
-		let issues = [];
-		try {
-			issues = (await githubAPI.getTroubleshootingIssues("approved")) || [];
-		} catch (e) {
-			list.innerHTML = `<div class="empty">Could not load fixes right now.</div>`;
-			return;
-		}
+		const listEl = document.getElementById("fixList");
+		const searchEl = document.getElementById("fixSearch");
+		const filtersEl = document.getElementById("fixFilters");
 
-		// Skip PRs
-		issues = issues.filter((i) => !i.pull_request);
-
-		const state = { q: "", cat: "all" };
+		let allIssues = [];
+		let activeCat = "all";
+		let query = "";
 
 		const render = () => {
-			const q = state.q.trim().toLowerCase();
+			const q = query.trim().toLowerCase();
 
-			const filtered = issues.filter((issue) => {
-				const cats = Pages.issueCats(issue);
-
-				const matchesCat = state.cat === "all" ? true : cats.has(state.cat);
-				if (!matchesCat) return false;
-
+			const filtered = allIssues.filter((it) => {
+				const cats = it._cats;
+				const okCat = activeCat === "all" ? true : cats.has(activeCat);
+				if (!okCat) return false;
 				if (!q) return true;
-				const hay = `${issue.title}\n${issue.body || ""}\n${(issue.labels || [])
-					.map((l) => l.name)
-					.join(" ")}`.toLowerCase();
-
-				return hay.includes(q);
+				return (
+					it.title.toLowerCase().includes(q) ||
+					(it.body || "").toLowerCase().includes(q)
+				);
 			});
 
 			if (!filtered.length) {
-				list.innerHTML = `<div class="empty">No fixes match your filters.</div>`;
+				listEl.innerHTML = `<div class="empty">No approved fixes match your filters.</div>`;
 				return;
 			}
 
-			list.innerHTML = filtered
-				.map((issue) => {
-					const cats = Pages.issueCats(issue);
-					const tags = Array.from(cats)
-						.map((c) => `<span class="tag">${Pages.escapeHtml(c)}</span>`)
+			listEl.innerHTML = filtered
+				.map((it) => {
+					const labelBadges = (it.labels || [])
+						.map((l) => Pages.normalizeLabel(l.name))
+						.filter((n) => n && n !== "approved")
+						.slice(0, 6)
+						.map((n) => `<span class="badge">${Pages.escapeHtml(n)}</span>`)
 						.join("");
 
-					const rendered = window.markdown?.render
-						? window.markdown.render(issue.body || "", { breaks: true })
-						: Pages.escapeHtml(issue.body || "");
-
-					const safe = window.DOMPurify ? DOMPurify.sanitize(rendered) : rendered;
+					const safeTitle = Pages.escapeHtml(it.title);
+					const bodyHtml = window.markdown?.render
+						? window.markdown.render(it.body || "", { breaks: true })
+						: Pages.escapeHtml(it.body || "").replaceAll("\n", "<br>");
 
 					return `
-						<div class="acc-item">
-							<button class="acc-head" type="button" data-acc="toggle" aria-expanded="false">
-								<div class="acc-left">
-									<div class="acc-title">${Pages.escapeHtml(issue.title || "Untitled fix")}</div>
-									<div class="acc-meta">
-										${tags}
-										<span class="muted">#${issue.number}</span>
-										<span class="muted">${githubAPI.formatDate(issue.created_at)}</span>
-									</div>
-								</div>
-								<span class="chevron" aria-hidden="true">⌄</span>
-							</button>
-
-							<div class="acc-body" data-acc="body" hidden>
-								<div class="prose">
-									${safe}
-									<div style="margin-top:12px;">
-										<a class="btn btn-ghost" href="${issue.html_url}" target="_blank" rel="noopener noreferrer">
-											Open on GitHub (#${issue.number})
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
+						<details class="accordion">
+							<summary>
+								<div class="acc-title">${safeTitle}</div>
+								<div class="acc-meta">${labelBadges}</div>
+							</summary>
+							<div class="acc-body prose">${bodyHtml}</div>
+						</details>
 					`;
 				})
 				.join("");
-
-			// Accordion behavior
-			list.querySelectorAll('[data-acc="toggle"]').forEach((btn) => {
-				btn.addEventListener("click", () => {
-					const body = btn.parentElement.querySelector('[data-acc="body"]');
-					const expanded = btn.getAttribute("aria-expanded") === "true";
-					btn.setAttribute("aria-expanded", expanded ? "false" : "true");
-					body.hidden = expanded;
-
-					// When opening, scroll a bit higher so you can SEE you landed there
-					if (!expanded) {
-						const y =
-							btn.getBoundingClientRect().top +
-							window.scrollY -
-							Pages.getHeaderOffsetPx() -
-							10;
-						window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-					}
-				});
-			});
 		};
 
-		search.addEventListener("input", () => {
-			state.q = search.value || "";
+		const setActiveChip = (cat) => {
+			activeCat = cat;
+			filtersEl.querySelectorAll(".chip").forEach((b) => {
+				b.classList.toggle("active", b.dataset.cat === cat);
+			});
+			render();
+		};
+
+		searchEl.addEventListener("input", () => {
+			query = searchEl.value || "";
 			render();
 		});
 
-		filters.querySelectorAll(".chip").forEach((chip) => {
-			chip.addEventListener("click", () => {
-				filters.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
-				chip.classList.add("active");
-				state.cat = chip.getAttribute("data-cat") || "all";
-				render();
-			});
+		filtersEl.querySelectorAll(".chip").forEach((b) => {
+			b.addEventListener("click", () => setActiveChip(b.dataset.cat));
 		});
 
-		render();
+		try {
+			const issues = await window.api.listApprovedFixes();
+			allIssues = (issues || []).map((it) => ({ ...it, _cats: Pages.issueCats(it) }));
+			render();
+		} catch (e) {
+			listEl.innerHTML = `<div class="error">Failed to load fixes. Try again later.</div>`;
+		}
 	}
 
 	// ---------- CHANGELOG ----------
@@ -334,51 +313,56 @@ class Pages {
 			</section>
 		`;
 
-		// Fill drawer quickjump here too
+		// hydrate drawer nav guide quickjump (reuse guide sections)
 		try {
 			const sections = await Pages.loadGuideSections();
 			Pages.renderDrawerGuideNav(sections);
-		} catch {}
 
-		const root = container.querySelector("#changelogRoot");
+			const drawer = document.getElementById("drawerGuideNav");
+			if (drawer) {
+				drawer.querySelectorAll("[data-scroll-id]").forEach((btn) => {
+					btn.addEventListener("click", () => {
+						const id = btn.getAttribute("data-scroll-id");
+						if (!id) return;
+						localStorage.setItem("revo_pending_scroll", id);
+						location.hash = "#/guide";
+					});
+				});
+			}
+		} catch (e) {}
 
-		let releases = [];
+		const root = document.getElementById("changelogRoot");
+		if (!root) return;
+
 		try {
-			releases = await githubAPI.getReleases();
+			const rels = await window.api.listReleases();
+			if (!rels.length) {
+				root.innerHTML = `<div class="empty">No releases found.</div>`;
+				return;
+			}
+
+			root.innerHTML = rels
+				.map((r) => {
+					const name = Pages.escapeHtml(r.name || r.tag_name || "Release");
+					const date = r.published_at ? new Date(r.published_at).toLocaleString() : "";
+					const bodyHtml = window.markdown?.render
+						? window.markdown.render(r.body || "", { breaks: true })
+						: Pages.escapeHtml(r.body || "").replaceAll("\n", "<br>");
+
+					return `
+						<article class="release">
+							<header class="release-head">
+								<h2>${name}</h2>
+								<div class="release-meta">${Pages.escapeHtml(date)}</div>
+							</header>
+							<div class="prose">${bodyHtml}</div>
+						</article>
+					`;
+				})
+				.join("\n");
 		} catch (e) {
-			root.innerHTML = `<div class="empty">Could not load releases right now.</div>`;
-			return;
+			root.innerHTML = `<div class="error">Failed to load changelog. Try again later.</div>`;
 		}
-
-		if (!Array.isArray(releases) || releases.length === 0) {
-			root.innerHTML = `<div class="empty">No releases found.</div>`;
-			return;
-		}
-
-		root.innerHTML = releases
-			.map((r) => {
-				const title = Pages.escapeHtml(r.name || r.tag_name || "Release");
-				const date = githubAPI.formatDate(r.published_at || r.created_at);
-				const body = window.markdown?.render
-					? window.markdown.render(r.body || "", { breaks: true })
-					: Pages.escapeHtml(r.body || "");
-				const safe = window.DOMPurify ? DOMPurify.sanitize(body) : body;
-
-				return `
-					<section class="release">
-						<h2>${title}</h2>
-						<p class="muted">${date}</p>
-						${safe}
-						<p style="margin-top:12px;">
-							<a class="btn btn-ghost" href="${r.html_url}" target="_blank" rel="noopener noreferrer">
-								View on GitHub
-							</a>
-						</p>
-						<hr />
-					</section>
-				`;
-			})
-			.join("");
 	}
 
 	static render404(container) {
@@ -396,3 +380,5 @@ class Pages {
 		`;
 	}
 }
+
+window.Pages = Pages;
