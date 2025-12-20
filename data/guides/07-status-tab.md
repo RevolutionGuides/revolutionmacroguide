@@ -1,45 +1,49 @@
 # Status Tab
 
-The Status Tab provides real-time monitoring and statistics.
+## Logs ![](./assets/status-logs-controls.png)
 
-## Real-Time Information
+- **Show Console**: Shows the console for commands you can enter
+- **Log Level**: Set to **4** for maximum verbose logging (debugging only). Keep at **0** if you aren’t experienced
+- **Copy Logs**: Copies logs so you can send them in Discord for Support Staff to assist you
+- **Open Logs Folder**: Opens the logs folder in your File Explorer / Finder
+- **Clear Logs**: Clears all logs
 
-Monitor these key metrics:
+---
 
-- **Current Field**: Active farming location
-- **FPS**: Frames per second (aim for 20+ for stability)
-- **Honey Rate**: Honey per second production
-- **Status**: Current macro operation state
-- **Runtime**: How long the macro has been running
-- **Errors**: Any active issues or warnings
+## Webhook Tutorial *(Recommended)*
 
-## Performance Metrics
+How to connect your macro to a Discord Webhook.
 
-| Metric           | What It Means                            |
-| ---------------- | ---------------------------------------- |
-| **FPS**          | Lower FPS = less stable; 20+ recommended |
-| **Honey/Second** | Current collection speed                 |
-| **Backpack %**   | How full your inventory is               |
-| **Time Active**  | Total runtime of current session         |
+1. Make a new Discord server
+2. Edit / press the **gear icon** on the `general` text channel
+3. Go to **Integrations** → **Webhooks** → create a new webhook
+4. Copy the **Webhook URL**
+5. Open **Revolution Macro** and paste the URL in:
+   - **Status tab → Webhook**
+6. *(Optional)* Add your Discord ID for pings if something goes wrong
+   - Enable **Developer Mode** in Discord
+   - Copy your ID and paste it into the macro under Webhooks
+7. Hourly graphs are automatically processed and sent via webhook
 
-## Status Indicators
+---
 
-- **Running**: Macro is actively farming
-- **Paused**: Macro is paused (F2)
-- **Collecting**: Currently collecting/converting
-- **Idle**: Waiting for next action
-- **Error**: Issue encountered, check logs
+## Bot Tutorial  
+*(Webhook is easier and recommended)*
 
-## Troubleshooting with Status Tab
+How to set up the Revolution Macro Discord bot.
 
-1. Check FPS - if too low, adjust graphics settings
-2. Monitor honey rate - should be consistent
-3. Watch for error messages
-4. Note when macro pauses unexpectedly
+1. Create a new Discord bot with the correct permissions and add it to your server  
+   *(online guides can help with this step)*
+2. Copy the **Bot Token** and paste it into:
+   - **Status tab → Bot → Bot Token**
+3. Set the **Bot Channel** to your server’s logging channel
+4. Command prefix can remain the same
+5. Enable **Slash Commands** for easier usage
+6. Run `/report` for an instant hourly graph report  
+   - Hourly graphs are sent automatically
 
-## Performance Optimization
+---
 
-- Close unnecessary programs to improve FPS
-- Adjust Roblox graphics settings down if FPS is low
-- Use Status Tab data to identify bottlenecks
-- Refer to Troubleshooting section for specific issues
+## Statistics
+
+- **Work in Progress**
