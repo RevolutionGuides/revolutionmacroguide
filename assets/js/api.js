@@ -65,13 +65,3 @@ class GitHubAPI {
 }
 
 const githubAPI = new GitHubAPI();
-
-/**
- * IMPORTANT: pages.js expects window.api.listApprovedFixes() and window.api.listReleases()
- * This wrapper preserves your GitHubAPI class while matching the expected interface.
- */
-window.api = {
-	listApprovedFixes: () => githubAPI.getTroubleshootingIssues("approved"),
-	listReleases: () => githubAPI.getReleases(),
-};
-
