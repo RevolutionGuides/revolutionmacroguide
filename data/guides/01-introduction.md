@@ -6,7 +6,7 @@
 
 - _Feature/Button Name_: _What it does_
 
-## Version 0.8c (Pre-release 2)
+## Version 0.8c (hotfix 1)
 
 > ⚠️ **Important**: The macro requires at least 1920x1080 resolution on Windows (or 1366x768 as minimum), 100% scale, no HDR, and no touchscreen support.
 
