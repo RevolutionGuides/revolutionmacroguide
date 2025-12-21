@@ -1,5 +1,12 @@
 # Installation Guide
 
+## Updating the Macro
+1. To update the macro SAFELY: Download the latest zip
+2. Extract the zip in downloads folder
+3. Move the revolution into the folder with all your old settings/logs (so macro doesn’t reset settings) and delete the old macro
+4. You have successfully updated the macro
+
+
 ## Windows Installation
 
 1. Visit the [GitHub Releases Page](https://github.com/nosyliam/revolution-macro/releases/latest)
@@ -18,7 +25,7 @@
 ## First Launch
 
 1. Double-click `RevolutionMacro.exe`
-2. Allow Windows Firewall access if prompted
+2. Allow Windows Firewall access if prompted or see more, then download anyways
 3. Configure basic settings in the UI
 
 ## Troubleshooting Installation
